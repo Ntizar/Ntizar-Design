@@ -446,7 +446,7 @@
       <li><a href="#theming" class="nav-link">Theming</a></li>
     </ul>
     <div class="navbar-actions">
-      <span class="badge badge-glass no-dot">v2.0.0</span>
+      <span class="badge badge-glass no-dot">v2.1.0</span>
       <button class="btn btn-glass btn-icon btn-sm" id="theme-toggle" data-tooltip="Cambiar tema">
         <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -460,7 +460,9 @@
     const toggle = document.getElementById('theme-toggle');
     const sun = document.getElementById('icon-sun');
     const moon = document.getElementById('icon-moon');
-    let dark = true;
+    let dark = false;
+    sun.style.display = 'block';
+    moon.style.display = 'none';
     toggle.addEventListener('click', function() {
       dark = !dark;
       document.documentElement.classList.toggle('theme-light', !dark);
@@ -480,7 +482,7 @@
     <section class="demo-section" style="border-bottom: none; padding-bottom: 2rem;">
       <div class="flex flex-col gap-6" style="max-width: 720px;">
         <div class="animate-fade-up">
-          <span class="badge badge-blue no-dot" style="margin-bottom: 1rem;">Design System v2.0.0</span>
+          <span class="badge badge-blue no-dot" style="margin-bottom: 1rem;">Design System v2.1.0</span>
           <h1 class="hero-headline">
             <span class="text-gradient">Ntizar</span><br>
             Design System
@@ -499,7 +501,7 @@
           <div class="ai-hint" style="margin-bottom:0;">
             <strong>🤖 Para IAs:</strong> Este CSS se llama <code class="code-tag">ntizar.css</code>. Contiene 30+ clases reutilizables.
             Pega <code class="code-tag">&lt;link rel="stylesheet" href="ntizar.css"&gt;</code> y usa las clases documentadas abajo.
-            Dark-first, con light mode automático. Todos los valores son variables CSS sobreescribibles.
+            Light-first, con modo oscuro automático y manual. Todos los valores son variables CSS sobreescribibles.
           </div>
         </div>
       </div>

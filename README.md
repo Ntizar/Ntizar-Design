@@ -1,10 +1,10 @@
 # Ntizar Design System
 
-**Liquid Glass UI — Azul & Naranja — v2.0.0**
+**Liquid Glass UI — Azul & Naranja — v2.1.0**
 
-Sistema de diseño con identidad propia. Un solo archivo CSS, sin dependencias, sin build system. Dark-first con light mode automático. Liquid Glass effect con refracción óptica real en Chrome.
+Sistema de diseño con identidad propia. Un solo archivo CSS, sin dependencias, sin build system. Light-first con modo oscuro automático y manual. Liquid Glass effect con refracción óptica real en Chrome.
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.1.0-blue)
 ![CSS Only](https://img.shields.io/badge/CSS-only-orange)
 ![No Dependencies](https://img.shields.io/badge/dependencies-none-green)
 
@@ -49,7 +49,7 @@ En otros navegadores se usa `backdrop-filter: blur()` como fallback automático.
 | **Avatares** | 4 tamaños, 3 colores |
 | **Animaciones** | float, glow, fade-up, fade-in, scale-in, liquid-morph + delays |
 | **Layout** | Container, flex, grid, gap, padding, margin, radius, glow, orbs |
-| **Theming** | Dark default, light auto/manual, variables sobreescribibles |
+| **Theming** | Light default, dark auto/manual, variables sobreescribibles |
 
 ---
 
@@ -445,9 +445,9 @@ Transiciones (variables):
 
 ## Theming
 
-**Dark mode** es el default. No necesitas hacer nada.
+**Light mode** es el default. No necesitas hacer nada.
 
-**Light mode** se activa automáticamente con `@media (prefers-color-scheme: light)`.
+**Dark mode** se activa automáticamente con `@media (prefers-color-scheme: dark)`.
 
 Para control manual:
 
