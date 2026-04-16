@@ -2083,30 +2083,40 @@ THEMING:
       </h2>
       <p class="section-desc">Todo lo que llega con v3: tokens <code class="code-tag">on-*</code> para contraste garantizado, tipografia fluid, 5 niveles de elevation, 11 componentes nuevos y backgrounds disruptivos. Aditivo puro sobre v2.</p>
 
-      <!-- Tipografia fluid -->
-      <div class="card mb-8">
-        <div class="card-header"><h3 class="card-title">Tipografia fluid</h3></div>
-        <div class="card-body">
-          <p class="text-display" style="margin:0 0 .5rem">Aurora</p>
-          <p class="text-fluid-3xl" style="margin:0 0 .25rem">text-fluid-3xl</p>
-          <p class="text-fluid-xl" style="margin:0 0 .25rem">text-fluid-xl</p>
-          <p class="text-fluid-base" style="margin:0">text-fluid-base — escala con el viewport via clamp().</p>
+      <!-- Hero -->
+      <div class="bg-aurora mb-6" style="border-radius:var(--radius-xl);padding:4rem 2rem;text-align:center;color:#fff;box-shadow:var(--elev-3);">
+        <h1 class="text-display" style="margin:0 0 .75rem;color:#fff;">Aurora</h1>
+        <p class="text-fluid-xl" style="margin:0 auto 1.75rem;max-width:42ch;color:rgba(255,255,255,.92);">Contraste garantizado. Tipografia fluid. Alma disruptiva.</p>
+        <div class="flex gap-3 justify-center flex-wrap">
+          <button class="btn btn-primary">Empezar</button>
+          <button class="btn btn-glass">Docs</button>
         </div>
       </div>
 
-      <!-- Switches + Segmented -->
-      <div class="grid grid-cols-2 gap-6 mb-8">
+      <!-- Tipografia fluid -->
+      <div class="card mb-6">
+        <div class="card-header"><h3 class="card-title">Tipografia fluid</h3></div>
+        <div class="card-body">
+          <p class="text-fluid-4xl" style="margin:0 0 .5rem;font-weight:var(--font-bold);">text-fluid-4xl</p>
+          <p class="text-fluid-2xl" style="margin:0 0 .5rem;">text-fluid-2xl</p>
+          <p class="text-fluid-lg" style="margin:0 0 .5rem;">text-fluid-lg</p>
+          <p class="text-fluid-base" style="margin:0;color:var(--on-surface-muted);">text-fluid-base — las escalas usan <code class="code-tag">clamp()</code> y se adaptan al viewport.</p>
+        </div>
+      </div>
+
+      <!-- Switch + Segmented -->
+      <div class="grid grid-2 gap-6 mb-6">
         <div class="card">
           <div class="card-header"><h3 class="card-title">Switch</h3></div>
           <div class="card-body flex flex-col gap-3">
-            <label class="switch"><input type="checkbox" checked><span class="switch-track"></span><span>Notificaciones</span></label>
-            <label class="switch switch-orange"><input type="checkbox" checked><span class="switch-track"></span><span>Modo creativo</span></label>
-            <label class="switch switch-lg"><input type="checkbox"><span class="switch-track"></span><span>Large</span></label>
+            <label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span><span>Notificaciones</span></label>
+            <label class="switch switch-orange"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span><span>Modo creativo</span></label>
+            <label class="switch switch-lg"><input type="checkbox"><span class="switch-track"><span class="switch-thumb"></span></span><span>Tamano grande</span></label>
           </div>
         </div>
         <div class="card">
           <div class="card-header"><h3 class="card-title">Segmented</h3></div>
-          <div class="card-body flex flex-col gap-3">
+          <div class="card-body flex flex-col gap-3 items-start">
             <div class="segmented">
               <button class="segmented-item active">Day</button>
               <button class="segmented-item">Week</button>
@@ -2121,85 +2131,118 @@ THEMING:
         </div>
       </div>
 
-      <!-- Dropdown + Breadcrumb + Pagination -->
-      <div class="card mb-8">
-        <div class="card-header"><h3 class="card-title">Dropdown · Breadcrumb · Pagination</h3></div>
-        <div class="card-body flex flex-col gap-6">
-          <nav class="breadcrumb">
-            <a href="#" class="breadcrumb-item">Home</a>
-            <span class="breadcrumb-sep">/</span>
-            <a href="#" class="breadcrumb-item">Design</a>
-            <span class="breadcrumb-sep">/</span>
+      <!-- Breadcrumb + Pagination -->
+      <div class="card mb-6">
+        <div class="card-header"><h3 class="card-title">Breadcrumb · Pagination</h3></div>
+        <div class="card-body flex flex-col gap-5 items-start">
+          <nav class="breadcrumb" aria-label="breadcrumb">
+            <span class="breadcrumb-item"><a href="#">Home</a></span>
+            <span class="breadcrumb-item"><a href="#">Design</a></span>
             <span class="breadcrumb-item active">Aurora</span>
           </nav>
-          <div class="dropdown" style="max-width:260px">
-            <div class="dropdown-menu" style="position:static;display:block">
-              <div class="dropdown-label">Cuenta</div>
-              <a href="#" class="dropdown-item">Perfil</a>
-              <a href="#" class="dropdown-item">Ajustes</a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item dropdown-item-danger">Cerrar sesion</a>
-            </div>
-          </div>
-          <nav class="pagination">
-            <button class="page-item">&lsaquo;</button>
-            <button class="page-item">1</button>
-            <button class="page-item active">2</button>
-            <button class="page-item">3</button>
-            <span class="page-ellipsis">&hellip;</span>
-            <button class="page-item">9</button>
-            <button class="page-item">&rsaquo;</button>
+          <nav class="pagination" aria-label="pagination">
+            <button class="pagination-item" aria-label="anterior">&lsaquo;</button>
+            <button class="pagination-item">1</button>
+            <button class="pagination-item active" aria-current="page">2</button>
+            <button class="pagination-item">3</button>
+            <span class="pagination-ellipsis">&hellip;</span>
+            <button class="pagination-item">9</button>
+            <button class="pagination-item" aria-label="siguiente">&rsaquo;</button>
           </nav>
         </div>
       </div>
 
-      <!-- Stepper + Accordion -->
-      <div class="grid grid-cols-2 gap-6 mb-8">
+      <!-- Dropdown + Stepper -->
+      <div class="grid grid-2 gap-6 mb-6">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Dropdown (open)</h3></div>
+          <div class="card-body" style="min-height:260px;">
+            <div class="dropdown open" style="display:block;">
+              <div class="dropdown-menu open" style="position:static;">
+                <div class="dropdown-label">Cuenta</div>
+                <a href="#" class="dropdown-item">Perfil</a>
+                <a href="#" class="dropdown-item">Ajustes</a>
+                <a href="#" class="dropdown-item">Facturacion</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item danger">Cerrar sesion</a>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="card">
           <div class="card-header"><h3 class="card-title">Stepper</h3></div>
           <div class="card-body">
             <ol class="stepper">
-              <li class="step step-done"><span class="step-marker">1</span><span class="step-label">Cuenta</span></li>
-              <li class="step step-active"><span class="step-marker">2</span><span class="step-label">Perfil</span></li>
-              <li class="step"><span class="step-marker">3</span><span class="step-label">Listo</span></li>
+              <li class="stepper-item done"><span class="stepper-dot">&check;</span><span class="stepper-label">Cuenta</span></li>
+              <li class="stepper-item active"><span class="stepper-dot">2</span><span class="stepper-label">Perfil</span></li>
+              <li class="stepper-item"><span class="stepper-dot">3</span><span class="stepper-label">Listo</span></li>
             </ol>
           </div>
         </div>
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Accordion</h3></div>
-          <div class="card-body">
-            <details class="accordion" open>
+      </div>
+
+      <!-- Accordion -->
+      <div class="card mb-6">
+        <div class="card-header"><h3 class="card-title">Accordion</h3></div>
+        <div class="card-body">
+          <div class="accordion">
+            <details class="accordion-item" open>
               <summary class="accordion-summary">Que es Aurora?</summary>
-              <div class="accordion-body">v3 del Ntizar DS: contraste garantizado, fluid type y componentes nuevos.</div>
+              <div class="accordion-content">v3 del Ntizar DS: contraste garantizado via tokens <code class="code-tag">on-*</code>, tipografia fluid y componentes nuevos.</div>
             </details>
-            <details class="accordion">
+            <details class="accordion-item">
               <summary class="accordion-summary">Es compatible con v2?</summary>
-              <div class="accordion-body">Si, todo lo de v2 sigue funcionando. v3 es aditivo.</div>
+              <div class="accordion-content">Si. v3 es aditivo puro, todas las clases de v2 siguen funcionando.</div>
+            </details>
+            <details class="accordion-item">
+              <summary class="accordion-summary">Como lo instalo?</summary>
+              <div class="accordion-content">Solo copia <code class="code-tag">ntizar.css</code> y enlazalo. No hay build ni dependencias.</div>
             </details>
           </div>
         </div>
       </div>
 
-      <!-- Toast + kbd + Empty -->
-      <div class="card mb-8">
-        <div class="card-header"><h3 class="card-title">Toasts · Kbd · Empty state</h3></div>
-        <div class="card-body flex flex-col gap-4">
-          <div class="toast-container" style="position:static">
-            <div class="toast toast-success"><span class="toast-icon">&check;</span><div class="toast-body"><div class="toast-title">Guardado</div><div class="toast-msg">Cambios aplicados correctamente.</div></div></div>
-            <div class="toast toast-info"><span class="toast-icon">i</span><div class="toast-body"><div class="toast-title">Nuevo</div><div class="toast-msg">v3 Aurora ya disponible.</div></div></div>
+      <!-- Toasts + Kbd -->
+      <div class="grid grid-2 gap-6 mb-6">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Toasts</h3></div>
+          <div class="card-body">
+            <div class="toast-container" style="position:static;top:auto;right:auto;">
+              <div class="toast toast-success"><span class="toast-icon">&check;</span><div class="toast-body"><div class="toast-title">Guardado</div>Cambios aplicados correctamente.</div></div>
+              <div class="toast toast-info"><span class="toast-icon">i</span><div class="toast-body"><div class="toast-title">Nuevo</div>v3 Aurora ya disponible.</div></div>
+              <div class="toast toast-warning"><span class="toast-icon">!</span><div class="toast-body"><div class="toast-title">Atencion</div>Revisa los valores antes de enviar.</div></div>
+            </div>
           </div>
-          <p>Atajo: <kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">K</kbd> para abrir el buscador.</p>
-          <div class="empty-state">
-            <div class="empty-icon">&empty;</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Keyboard (kbd)</h3></div>
+          <div class="card-body flex flex-col gap-3" style="font-size:var(--text-sm);color:var(--on-surface-muted);">
+            <div>Abrir buscador: <kbd>Ctrl</kbd> + <kbd>K</kbd></div>
+            <div>Guardar: <kbd>Ctrl</kbd> + <kbd>S</kbd></div>
+            <div>Cambiar tema: <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd></div>
+            <div>Salir: <kbd>Esc</kbd></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="card mb-6">
+        <div class="card-header"><h3 class="card-title">Empty state</h3></div>
+        <div class="card-body">
+          <div class="empty">
+            <div class="empty-icon" style="font-size:1.5rem;">&empty;</div>
             <h4 class="empty-title">Sin resultados</h4>
-            <p class="empty-msg">Prueba con otros filtros o limpia la busqueda.</p>
-            <button class="btn btn-primary btn-sm">Limpiar filtros</button>
+            <p class="empty-body">Prueba con otros filtros o limpia la busqueda para ver todos los elementos.</p>
+            <div class="empty-actions">
+              <button class="btn btn-primary btn-sm">Limpiar filtros</button>
+              <button class="btn btn-glass btn-sm">Explorar</button>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Code block -->
-      <div class="card mb-8">
+      <div class="card mb-6">
         <div class="card-header"><h3 class="card-title">Code block</h3></div>
         <div class="card-body">
           <div class="code-block">
@@ -2207,7 +2250,7 @@ THEMING:
               <span class="code-block-lang">css</span>
               <button class="code-block-copy">Copy</button>
             </div>
-<pre class="code-block-body"><code>.btn-primary {
+<pre><code>.btn-primary {
   background: var(--brand-gradient);
   color: var(--on-brand);
   box-shadow: var(--elev-2);
@@ -2217,37 +2260,27 @@ THEMING:
       </div>
 
       <!-- Elevation -->
-      <div class="card mb-8">
+      <div class="card mb-6">
         <div class="card-header"><h3 class="card-title">Elevation cinematografica</h3></div>
-        <div class="card-body grid grid-cols-5 gap-4">
-          <div style="padding:1.5rem;background:var(--surface-1);border-radius:var(--radius-lg);box-shadow:var(--elev-1);text-align:center">elev-1</div>
-          <div style="padding:1.5rem;background:var(--surface-1);border-radius:var(--radius-lg);box-shadow:var(--elev-2);text-align:center">elev-2</div>
-          <div style="padding:1.5rem;background:var(--surface-1);border-radius:var(--radius-lg);box-shadow:var(--elev-3);text-align:center">elev-3</div>
-          <div style="padding:1.5rem;background:var(--surface-1);border-radius:var(--radius-lg);box-shadow:var(--elev-4);text-align:center">elev-4</div>
-          <div style="padding:1.5rem;background:var(--surface-1);border-radius:var(--radius-lg);box-shadow:var(--elev-5);text-align:center">elev-5</div>
+        <div class="card-body" style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;">
+          <div style="padding:1.5rem 1rem;background:var(--bg-elevated);border-radius:var(--radius-lg);box-shadow:var(--elev-1);text-align:center;font-weight:var(--font-medium);color:var(--on-surface);">elev-1</div>
+          <div style="padding:1.5rem 1rem;background:var(--bg-elevated);border-radius:var(--radius-lg);box-shadow:var(--elev-2);text-align:center;font-weight:var(--font-medium);color:var(--on-surface);">elev-2</div>
+          <div style="padding:1.5rem 1rem;background:var(--bg-elevated);border-radius:var(--radius-lg);box-shadow:var(--elev-3);text-align:center;font-weight:var(--font-medium);color:var(--on-surface);">elev-3</div>
+          <div style="padding:1.5rem 1rem;background:var(--bg-elevated);border-radius:var(--radius-lg);box-shadow:var(--elev-4);text-align:center;font-weight:var(--font-medium);color:var(--on-surface);">elev-4</div>
+          <div style="padding:1.5rem 1rem;background:var(--bg-elevated);border-radius:var(--radius-lg);box-shadow:var(--elev-5);text-align:center;font-weight:var(--font-medium);color:var(--on-surface);">elev-5</div>
         </div>
       </div>
 
-      <!-- Backgrounds disruptivos -->
-      <div class="card mb-8">
+      <!-- Backgrounds -->
+      <div class="card mb-6">
         <div class="card-header"><h3 class="card-title">Backgrounds disruptivos</h3></div>
-        <div class="card-body grid grid-cols-2 gap-4">
-          <div class="bg-aurora" style="height:160px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:var(--on-inverse);font-weight:var(--font-semi)">.bg-aurora</div>
-          <div class="bg-mesh" style="height:160px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:var(--on-inverse);font-weight:var(--font-semi)">.bg-mesh</div>
-          <div class="bg-grid" style="height:160px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-weight:var(--font-semi);background-color:var(--surface-1)">.bg-grid</div>
-          <div class="bg-dots" style="height:160px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-weight:var(--font-semi);background-color:var(--surface-1)">.bg-dots</div>
+        <div class="card-body grid grid-2 gap-4">
+          <div class="bg-aurora" style="height:160px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:var(--font-semi);letter-spacing:var(--tracking-wide);">.bg-aurora</div>
+          <div class="bg-mesh" style="height:160px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:var(--font-semi);letter-spacing:var(--tracking-wide);">.bg-mesh</div>
+          <div class="bg-grid" style="height:160px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-weight:var(--font-semi);background-color:var(--bg-elevated);color:var(--on-surface);">.bg-grid</div>
+          <div class="bg-dots" style="height:160px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-weight:var(--font-semi);background-color:var(--bg-elevated);color:var(--on-surface);">.bg-dots</div>
         </div>
       </div>
-
-      <!-- Hero -->
-      <section class="hero-section bg-aurora" style="border-radius:var(--radius-xl);padding:4rem 2rem;text-align:center;color:var(--on-inverse);margin-bottom:2rem">
-        <h1 class="text-display" style="margin:0 0 .5rem">Aurora</h1>
-        <p class="text-fluid-xl" style="margin:0 0 1.5rem;opacity:.9">Contraste garantizado. Tipografia fluid. Alma disruptiva.</p>
-        <div class="flex gap-3 justify-center">
-          <button class="btn btn-primary">Empezar</button>
-          <button class="btn btn-glass">Docs</button>
-        </div>
-      </section>
     </section>
 
 
