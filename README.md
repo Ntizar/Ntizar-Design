@@ -2,12 +2,12 @@
 
 > Sistema CSS azul/naranja con estética liquid glass para los proyectos de Ntizar.
 
-![Version](https://img.shields.io/badge/version-2.1.0-2563eb)
+![Version](https://img.shields.io/badge/version-3.0.0_Aurora-2563eb)
 ![Modo](https://img.shields.io/badge/default-claro-f97316)
 ![CSS Only](https://img.shields.io/badge/css-only-0f1729)
 ![Dependencias](https://img.shields.io/badge/dependencies-none-16a34a)
 
-`Light-first` · `CSS-only` · `Sin build` · `Azul + naranja` · `Glass UI`
+`Light-first` · `CSS-only` · `Sin build` · `Azul + naranja` · `Glass UI` · `Contraste garantizado`
 
 ## Enlaces
 
@@ -32,12 +32,17 @@ Ntizar necesita un lenguaje visual reutilizable entre webs pequeñas, experiment
 
 | Área | Incluye |
 |---|---|
-| Color system | Azul, naranja, grises y tokens semánticos |
-| Tipografía | Escala, pesos, headings y helpers de texto |
+| Color system | Azul, naranja, grises, tokens semánticos y tokens `on-*` pareados para contraste garantizado |
+| Tipografía | Escala fija + escala `fluid` con `clamp()`, `text-wrap` balance/pretty, helper `.text-display` |
 | Glass layer | `subtle`, `standard`, `intense` y variantes de color |
-| Componentes | Buttons, cards, badges, inputs, navbar, modal, table, tabs, alerts |
+| Elevation | 5 niveles `--elev-1..5` con doble capa (ambient + directional) + halos azul/naranja |
+| Componentes v2 | Buttons, cards, badges, inputs, navbar, modal, table, tabs, alerts, avatars, tooltips, skeleton, progress |
+| Componentes v3 | Switch, dropdown, toast, breadcrumb, pagination, segmented, accordion (`<details>`), stepper, kbd, empty-state, code-block |
+| Backgrounds | `.bg-aurora` animado, `.bg-mesh`, `.bg-grid` (+sm/lg), `.bg-dots` (+sm/lg), `.bg-spotlight`, `.hero-section` |
+| A11y | `focus-visible` global con ring azul, `::selection` tintada, scrollbar con gradiente |
 | Utilities | Layout, spacing, radius, glow, text, orbs |
 | Theming | `.theme-light`, `.theme-dark`, dark automático por media query |
+| Layers | Declarado `@layer ntizar.tokens, ntizar.base, ntizar.components, ntizar.utilities` |
 
 ## Instalación
 
@@ -124,3 +129,13 @@ En otros navegadores sigue funcionando con `backdrop-filter` como fallback.
 - interfaces compactas sin framework pesado
 
 No lo metas a ciegas si el repo destino ya tiene una capa visual madura basada en otro sistema.
+
+## Novedades v3 Aurora
+
+- **Tokens `on-*`**: cada superficie y color de marca tiene su pareja de color de contenido (`--on-surface`, `--on-brand`, `--on-success`, …). Nunca más claro sobre claro u oscuro sobre oscuro.
+- **Tipografía fluid**: `--fluid-sm` a `--fluid-5xl` y `--fluid-display` con `clamp()`. Usa `.text-fluid-*` o `.text-display` para tamaños que escalan con el viewport.
+- **Elevation cinematográfica**: 5 niveles (`--elev-1..5`) con doble capa de sombra. Botones primarios con halo tintado en hover.
+- **Focus-visible global**: ring azul accesible en todos los controles interactivos sin necesidad de añadir clases.
+- **11 componentes nuevos**: switch, dropdown, toast, breadcrumb, pagination, segmented, accordion, stepper, kbd, empty-state, code-block.
+- **Backgrounds disruptivos**: aurora animada, mesh, grid, dots y spotlight — listos para hero sections.
+- **100% aditivo**: todo lo que funcionaba en v2 sigue funcionando. v3 solo añade.
