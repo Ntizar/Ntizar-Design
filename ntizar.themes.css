@@ -1,0 +1,168 @@
+/* ============================================================
+   NTIZAR THEMES PACK — Aurora Constellation
+   Depende de: ntizar.css
+
+   Activación:
+     <body class="nz" data-nz-theme="light" data-nz-skin="aurora">
+
+   Skins disponibles (todos respetan identidad azul + naranja):
+     - aurora   (default, balance azul+naranja)
+     - sunset   (más cálido, naranja dominante)
+     - midnight (más frío, azul profundo)
+     - ocean    (cyan-azul, refrescante)
+     - citrus   (naranja-amarillo brillante)
+
+   Cada skin solo redefine tokens de marca, gradientes y sombras.
+   No introduce clases nuevas. Compatible con light/dark.
+   ============================================================ */
+
+@layer ntizar.tokens {
+
+  /* ---------- AURORA (default) ---------- */
+  .nz[data-nz-skin="aurora"] {
+    --nz-color-brand: var(--nz-color-blue-600);
+    --nz-color-brand-strong: var(--nz-color-blue-700);
+    --nz-color-brand-soft: var(--nz-color-blue-400);
+    --nz-color-accent: var(--nz-color-orange-500);
+    --nz-color-accent-strong: var(--nz-color-orange-600);
+    --nz-color-accent-soft: var(--nz-color-orange-300);
+  }
+
+  /* ---------- SUNSET (naranja dominante, azul soporte) ---------- */
+  .nz[data-nz-skin="sunset"] {
+    --nz-color-brand: #ea580c;
+    --nz-color-brand-strong: #c2410c;
+    --nz-color-brand-soft: #fb923c;
+    --nz-color-accent: #2563eb;
+    --nz-color-accent-strong: #1d4ed8;
+    --nz-color-accent-soft: #60a5fa;
+    --nz-gradient-brand: linear-gradient(135deg, #fdba74 0%, #ea580c 58%, #9a3412 100%);
+    --nz-gradient-accent: linear-gradient(135deg, #93c5fd 0%, #2563eb 56%, #1e3a8a 100%);
+    --nz-gradient-aurora: linear-gradient(135deg, #f97316 0%, #db2777 46%, #2563eb 100%);
+    --nz-shadow-brand: 0 14px 34px rgba(234, 88, 12, 0.26), 0 24px 54px rgba(251, 146, 60, 0.14);
+    --nz-shadow-accent: 0 14px 34px rgba(37, 99, 235, 0.22), 0 24px 54px rgba(59, 130, 246, 0.12);
+    --nz-shadow-aurora: 0 16px 36px rgba(234, 88, 12, 0.22), 0 26px 54px rgba(37, 99, 235, 0.18);
+    --nz-surface-page: #fff7f0;
+  }
+  .nz[data-nz-skin="sunset"][data-nz-theme="dark"] {
+    --nz-surface-page: #1a0f08;
+  }
+
+  /* ---------- MIDNIGHT (azul profundo, naranja chispa) ---------- */
+  .nz[data-nz-skin="midnight"] {
+    --nz-color-brand: #1e40af;
+    --nz-color-brand-strong: #1e3a8a;
+    --nz-color-brand-soft: #3b82f6;
+    --nz-color-accent: #f97316;
+    --nz-color-accent-strong: #ea580c;
+    --nz-color-accent-soft: #fb923c;
+    --nz-gradient-brand: linear-gradient(135deg, #3b82f6 0%, #1e40af 58%, #0c1e5c 100%);
+    --nz-gradient-aurora: linear-gradient(135deg, #1e40af 0%, #4338ca 46%, #f97316 100%);
+    --nz-shadow-brand: 0 14px 34px rgba(30, 64, 175, 0.30), 0 24px 54px rgba(30, 58, 138, 0.18);
+    --nz-shadow-aurora: 0 18px 42px rgba(30, 64, 175, 0.28), 0 28px 58px rgba(249, 115, 22, 0.18);
+    --nz-surface-page: #eef2ff;
+  }
+  .nz[data-nz-skin="midnight"][data-nz-theme="dark"] {
+    --nz-surface-page: #060a18;
+  }
+
+  /* ---------- OCEAN (cyan + azul, naranja como accent) ---------- */
+  .nz[data-nz-skin="ocean"] {
+    --nz-color-brand: #0284c7;
+    --nz-color-brand-strong: #075985;
+    --nz-color-brand-soft: #38bdf8;
+    --nz-color-accent: #f97316;
+    --nz-color-accent-strong: #c2410c;
+    --nz-color-accent-soft: #fdba74;
+    --nz-gradient-brand: linear-gradient(135deg, #67e8f9 0%, #0284c7 58%, #0c4a6e 100%);
+    --nz-gradient-aurora: linear-gradient(135deg, #06b6d4 0%, #2563eb 46%, #f97316 100%);
+    --nz-shadow-brand: 0 14px 34px rgba(2, 132, 199, 0.24), 0 24px 54px rgba(14, 165, 233, 0.14);
+    --nz-shadow-aurora: 0 16px 36px rgba(2, 132, 199, 0.22), 0 26px 54px rgba(249, 115, 22, 0.18);
+    --nz-surface-page: #ecfeff;
+  }
+  .nz[data-nz-skin="ocean"][data-nz-theme="dark"] {
+    --nz-surface-page: #04141c;
+  }
+
+  /* ---------- CITRUS (naranja + amarillo, azul como ancla) ---------- */
+  .nz[data-nz-skin="citrus"] {
+    --nz-color-brand: #f97316;
+    --nz-color-brand-strong: #c2410c;
+    --nz-color-brand-soft: #fdba74;
+    --nz-color-accent: #2563eb;
+    --nz-color-accent-strong: #1d4ed8;
+    --nz-color-accent-soft: #60a5fa;
+    --nz-gradient-brand: linear-gradient(135deg, #fde047 0%, #f97316 58%, #c2410c 100%);
+    --nz-gradient-accent: linear-gradient(135deg, #93c5fd 0%, #2563eb 100%);
+    --nz-gradient-aurora: linear-gradient(135deg, #fde047 0%, #f97316 46%, #2563eb 100%);
+    --nz-shadow-brand: 0 14px 34px rgba(249, 115, 22, 0.26), 0 24px 54px rgba(253, 224, 71, 0.16);
+    --nz-shadow-aurora: 0 16px 36px rgba(249, 115, 22, 0.24), 0 26px 54px rgba(37, 99, 235, 0.16);
+    --nz-surface-page: #fffbeb;
+  }
+  .nz[data-nz-skin="citrus"][data-nz-theme="dark"] {
+    --nz-surface-page: #1a1305;
+  }
+
+  /* ---------- CHART PALETTES (consumibles desde JS o CSS) ----------
+     Usa: getComputedStyle(el).getPropertyValue('--nz-chart-1')
+     Siempre 8 colores que armonizan con el skin activo.
+  */
+  .nz {
+    --nz-chart-1: var(--nz-color-blue-600);
+    --nz-chart-2: var(--nz-color-orange-500);
+    --nz-chart-3: var(--nz-color-violet-500);
+    --nz-chart-4: var(--nz-color-cyan-400);
+    --nz-chart-5: var(--nz-color-pink-400);
+    --nz-chart-6: var(--nz-color-blue-300);
+    --nz-chart-7: var(--nz-color-orange-300);
+    --nz-chart-8: var(--nz-color-green-600);
+
+    --nz-chart-grid: var(--nz-border-soft);
+    --nz-chart-axis: var(--nz-text-muted);
+    --nz-chart-bg: transparent;
+  }
+
+  .nz[data-nz-skin="sunset"] {
+    --nz-chart-1: #ea580c;
+    --nz-chart-2: #2563eb;
+    --nz-chart-3: #db2777;
+    --nz-chart-4: #f59e0b;
+    --nz-chart-5: #7c3aed;
+    --nz-chart-6: #fb923c;
+    --nz-chart-7: #60a5fa;
+    --nz-chart-8: #10b981;
+  }
+
+  .nz[data-nz-skin="midnight"] {
+    --nz-chart-1: #3b82f6;
+    --nz-chart-2: #f97316;
+    --nz-chart-3: #6366f1;
+    --nz-chart-4: #22d3ee;
+    --nz-chart-5: #a855f7;
+    --nz-chart-6: #93c5fd;
+    --nz-chart-7: #fdba74;
+    --nz-chart-8: #34d399;
+  }
+
+  .nz[data-nz-skin="ocean"] {
+    --nz-chart-1: #0284c7;
+    --nz-chart-2: #f97316;
+    --nz-chart-3: #06b6d4;
+    --nz-chart-4: #14b8a6;
+    --nz-chart-5: #6366f1;
+    --nz-chart-6: #67e8f9;
+    --nz-chart-7: #fdba74;
+    --nz-chart-8: #f43f5e;
+  }
+
+  .nz[data-nz-skin="citrus"] {
+    --nz-chart-1: #f97316;
+    --nz-chart-2: #2563eb;
+    --nz-chart-3: #fde047;
+    --nz-chart-4: #fb923c;
+    --nz-chart-5: #ec4899;
+    --nz-chart-6: #60a5fa;
+    --nz-chart-7: #facc15;
+    --nz-chart-8: #16a34a;
+  }
+}

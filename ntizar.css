@@ -1,11 +1,12 @@
 /* ============================================================
    NTIZAR DESIGN SYSTEM
-   Aurora v4.0.0
+   Aurora v4.1.0 — Constellation core
 
    Objetivo:
    - Un solo CSS copiable para apps nuevas
    - API namespaced para evitar colisiones
    - CSS-only, sin build, sin dependencias
+   - Compatible con packs opcionales (themes, data, charts, maps, viz, motion)
 
    Contrato publico:
    - Root opt-in: `.nz`
@@ -13,6 +14,7 @@
    - Objetos: `.nz-container`, `.nz-section`, `.nz-stack`, `.nz-grid`, ...
    - Componentes: `.nz-btn`, `.nz-card`, `.nz-field`, `.nz-badge`, ...
    - Tema: `[data-nz-theme="light|dark"]`
+   - Skin (opcional via ntizar.themes.css): `[data-nz-skin="aurora|sunset|midnight|ocean|citrus"]`
    ============================================================ */
 
 @layer ntizar.tokens, ntizar.base, ntizar.objects, ntizar.components, ntizar.utilities;
@@ -1183,5 +1185,64 @@
     clip: rect(0, 0, 0, 0) !important;
     white-space: nowrap !important;
     border: 0 !important;
+  }
+
+  /* ---------- v4.1 utilities (potencian packs externos) ---------- */
+
+  .nz :where(.u-nz-text-accent) {
+    color: var(--nz-color-accent) !important;
+  }
+
+  .nz :where(.u-nz-text-success) { color: var(--nz-status-success-text) !important; }
+  .nz :where(.u-nz-text-danger)  { color: var(--nz-status-danger-text)  !important; }
+  .nz :where(.u-nz-text-warning) { color: var(--nz-status-warning-text) !important; }
+
+  .nz :where(.u-nz-text-center) { text-align: center !important; }
+  .nz :where(.u-nz-text-right)  { text-align: right  !important; }
+  .nz :where(.u-nz-text-left)   { text-align: left   !important; }
+
+  .nz :where(.u-nz-text-mono)   { font-family: var(--nz-font-mono) !important; }
+  .nz :where(.u-nz-num)         { font-variant-numeric: tabular-nums !important; }
+
+  .nz :where(.u-nz-glow)        { box-shadow: var(--nz-shadow-brand) !important; }
+  .nz :where(.u-nz-glow-accent) { box-shadow: var(--nz-shadow-accent) !important; }
+  .nz :where(.u-nz-glow-aurora) { box-shadow: var(--nz-shadow-aurora) !important; }
+
+  .nz :where(.u-nz-bg-brand)   { background: var(--nz-gradient-brand)  !important; color: #fff !important; }
+  .nz :where(.u-nz-bg-accent)  { background: var(--nz-gradient-accent) !important; color: #fff !important; }
+  .nz :where(.u-nz-bg-aurora)  { background: var(--nz-gradient-aurora) !important; color: #fff !important; }
+
+  .nz :where(.u-nz-rounded-sm) { border-radius: var(--nz-radius-sm) !important; }
+  .nz :where(.u-nz-rounded-md) { border-radius: var(--nz-radius-md) !important; }
+  .nz :where(.u-nz-rounded-lg) { border-radius: var(--nz-radius-lg) !important; }
+  .nz :where(.u-nz-rounded-xl) { border-radius: var(--nz-radius-xl) !important; }
+  .nz :where(.u-nz-rounded-pill) { border-radius: var(--nz-radius-pill) !important; }
+
+  .nz :where(.u-nz-hide)        { display: none !important; }
+  .nz :where(.u-nz-flex)        { display: flex !important; }
+  .nz :where(.u-nz-grid)        { display: grid !important; }
+  .nz :where(.u-nz-block)       { display: block !important; }
+  .nz :where(.u-nz-inline-flex) { display: inline-flex !important; }
+
+  .nz :where(.u-nz-gap-1) { gap: var(--nz-space-1) !important; }
+  .nz :where(.u-nz-gap-2) { gap: var(--nz-space-2) !important; }
+  .nz :where(.u-nz-gap-3) { gap: var(--nz-space-3) !important; }
+  .nz :where(.u-nz-gap-4) { gap: var(--nz-space-4) !important; }
+  .nz :where(.u-nz-gap-5) { gap: var(--nz-space-5) !important; }
+
+  .nz :where(.u-nz-mt-auto) { margin-top: auto !important; }
+  .nz :where(.u-nz-ml-auto) { margin-left: auto !important; }
+  .nz :where(.u-nz-mx-auto) { margin-inline: auto !important; }
+
+  .nz :where(.u-nz-aspect-square) { aspect-ratio: 1 / 1; }
+  .nz :where(.u-nz-aspect-video)  { aspect-ratio: 16 / 9; }
+  .nz :where(.u-nz-aspect-cinema) { aspect-ratio: 21 / 9; }
+
+  /* responsive helpers */
+  @media (max-width: 720px) {
+    .nz :where(.u-nz-hide-sm)  { display: none !important; }
+  }
+  @media (min-width: 721px) {
+    .nz :where(.u-nz-show-sm-only) { display: none !important; }
   }
 }

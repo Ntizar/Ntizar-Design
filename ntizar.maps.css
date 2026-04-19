@@ -1,0 +1,256 @@
+/* ============================================================
+   NTIZAR MAPS PACK
+   Depende de: ntizar.css
+
+   Compatible con: Leaflet, Mapbox GL, MapLibre GL, Google Maps,
+   o cualquier mapa renderizado en un contenedor.
+
+   API pública:
+     .nz-map               -> contenedor base con altura fluida
+     .nz-map--sm | --md | --lg | --hero | --fullscreen
+     .nz-map--glass        -> frame con glass alrededor del canvas
+     .nz-map__overlay      -> overlay flotante absoluto (HUD)
+     .nz-map__controls     -> grupo de controles flotante
+     .nz-map__pin          -> pin custom (HTML, no SVG)
+     .nz-map__pin--accent
+     .nz-map__pin-pulse    -> halo animado
+     .nz-map__legend       -> caja flotante de leyenda
+     .nz-map__attribution  -> atribución compacta
+     .nz-map-tooltip       -> override visual de popups (.leaflet-popup-content-wrapper, .mapboxgl-popup-content)
+
+   Notas:
+     - El contenedor crea stacking context (isolation) para que los
+       overlays no se peleen con tiles externas.
+     - Para Leaflet/Mapbox: aplica también .nz-map al div del mapa.
+   ============================================================ */
+
+@layer ntizar.components {
+
+  .nz :where(.nz-map) {
+    position: relative;
+    width: 100%;
+    height: clamp(18rem, 40vw, 28rem);
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-lg);
+    background: var(--nz-surface-soft);
+    box-shadow: var(--nz-shadow-sm);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .nz :where(.nz-map--sm) { height: 14rem; }
+  .nz :where(.nz-map--md) { height: 22rem; }
+  .nz :where(.nz-map--lg) { height: 32rem; }
+  .nz :where(.nz-map--hero) { height: clamp(24rem, 60vh, 40rem); }
+  .nz :where(.nz-map--fullscreen) {
+    height: 100vh;
+    border-radius: 0;
+    border: 0;
+  }
+
+  .nz :where(.nz-map--glass) {
+    border-color: var(--nz-border-default);
+    box-shadow: var(--nz-shadow-md), var(--nz-glass-stroke);
+  }
+
+  /* Para que el canvas/tile-layer ocupe todo */
+  .nz :where(.nz-map) > .leaflet-container,
+  .nz :where(.nz-map) > .mapboxgl-map,
+  .nz :where(.nz-map) > .maplibregl-map,
+  .nz :where(.nz-map) > canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ---------- OVERLAY HUD ---------- */
+  .nz :where(.nz-map__overlay) {
+    position: absolute;
+    z-index: 2;
+    padding: var(--nz-space-3) var(--nz-space-4);
+    background: var(--nz-surface-glass-strong);
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-md);
+    box-shadow: var(--nz-shadow-md), var(--nz-glass-stroke);
+    color: var(--nz-text-strong);
+    font-size: var(--nz-text-sm);
+    max-width: min(22rem, calc(100% - 2rem));
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-map__overlay) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+      backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+    }
+  }
+  .nz :where(.nz-map__overlay--top-left)     { top: 1rem; left: 1rem; }
+  .nz :where(.nz-map__overlay--top-right)    { top: 1rem; right: 1rem; }
+  .nz :where(.nz-map__overlay--bottom-left)  { bottom: 1rem; left: 1rem; }
+  .nz :where(.nz-map__overlay--bottom-right) { bottom: 1rem; right: 1rem; }
+  .nz :where(.nz-map__overlay--center) {
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+
+  /* ---------- CONTROLS ---------- */
+  .nz :where(.nz-map__controls) {
+    position: absolute;
+    z-index: 3;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.4rem;
+    background: var(--nz-surface-glass-strong);
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-md);
+    box-shadow: var(--nz-shadow-md), var(--nz-glass-stroke);
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-map__controls) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+      backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+    }
+  }
+  .nz :where(.nz-map__controls) button {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: var(--nz-radius-sm);
+    color: var(--nz-text-strong);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background var(--nz-duration-fast) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-map__controls) button:hover {
+    background: var(--nz-surface-brand-soft);
+  }
+
+  /* ---------- PIN (HTML marker) ----------
+     Coloca el pin en el mapa con position: absolute o usa
+     L.divIcon({className:'nz-map__pin'}) en Leaflet.
+  */
+  .nz :where(.nz-map__pin) {
+    --nz-pin-color: var(--nz-color-brand);
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50% 50% 50% 0;
+    background: var(--nz-pin-color);
+    transform: rotate(-45deg);
+    border: 2px solid #fff;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.3);
+    position: relative;
+  }
+  .nz :where(.nz-map__pin)::after {
+    content: "";
+    position: absolute;
+    inset: 25%;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .nz :where(.nz-map__pin--accent) { --nz-pin-color: var(--nz-color-accent); }
+  .nz :where(.nz-map__pin--success) { --nz-pin-color: var(--nz-color-success); }
+  .nz :where(.nz-map__pin--danger) { --nz-pin-color: var(--nz-color-danger); }
+
+  .nz :where(.nz-map__pin-pulse) {
+    --nz-pulse-color: var(--nz-color-brand);
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--nz-pulse-color);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--nz-pulse-color) 60%, transparent);
+    animation: nz-map-pulse 2s var(--nz-ease-standard) infinite;
+    position: relative;
+  }
+  .nz :where(.nz-map__pin-pulse--accent) { --nz-pulse-color: var(--nz-color-accent); }
+  @keyframes nz-map-pulse {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--nz-pulse-color) 60%, transparent); }
+    70%  { box-shadow: 0 0 0 1.25rem color-mix(in srgb, var(--nz-pulse-color) 0%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--nz-pulse-color) 0%, transparent); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nz :where(.nz-map__pin-pulse) { animation: none; }
+  }
+
+  /* ---------- LEGEND ---------- */
+  .nz :where(.nz-map__legend) {
+    position: absolute;
+    z-index: 2;
+    bottom: 1rem;
+    left: 1rem;
+    padding: var(--nz-space-3);
+    background: var(--nz-surface-glass-strong);
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-md);
+    box-shadow: var(--nz-shadow-md), var(--nz-glass-stroke);
+    font-size: var(--nz-text-xs);
+    color: var(--nz-text-default);
+    display: grid;
+    gap: 0.4rem;
+  }
+  .nz :where(.nz-map__legend) ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .nz :where(.nz-map__legend) li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .nz :where(.nz-map__legend) li::before {
+    content: "";
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: var(--nz-color-brand);
+    flex: 0 0 auto;
+  }
+
+  /* ---------- ATTRIBUTION ---------- */
+  .nz :where(.nz-map__attribution) {
+    position: absolute;
+    z-index: 2;
+    bottom: 0.4rem;
+    right: 0.6rem;
+    padding: 0.15rem 0.45rem;
+    background: rgba(255, 255, 255, 0.72);
+    border-radius: var(--nz-radius-sm);
+    font-size: 0.65rem;
+    color: var(--nz-text-muted);
+  }
+  .nz[data-nz-theme="dark"] :where(.nz-map__attribution) {
+    background: rgba(15, 23, 42, 0.72);
+  }
+
+  /* ---------- POPUP override (Leaflet / Mapbox / MapLibre) ---------- */
+  .nz :where(.leaflet-popup-content-wrapper),
+  .nz :where(.mapboxgl-popup-content),
+  .nz :where(.maplibregl-popup-content),
+  .nz :where(.nz-map-tooltip) {
+    background: var(--nz-surface-glass-strong) !important;
+    color: var(--nz-text-strong) !important;
+    border: 1px solid var(--nz-border-default) !important;
+    border-radius: var(--nz-radius-md) !important;
+    box-shadow: var(--nz-shadow-md), var(--nz-glass-stroke) !important;
+    padding: var(--nz-space-3) var(--nz-space-4) !important;
+    font-family: var(--nz-font-sans) !important;
+    font-size: var(--nz-text-sm) !important;
+  }
+  .nz :where(.leaflet-popup-tip),
+  .nz :where(.mapboxgl-popup-tip),
+  .nz :where(.maplibregl-popup-tip) {
+    background: var(--nz-surface-glass-strong) !important;
+  }
+
+  /* ---------- Leaflet zoom controls override (opcional) ---------- */
+  .nz :where(.leaflet-control-zoom) a,
+  .nz :where(.mapboxgl-ctrl-group) button {
+    background: var(--nz-surface-glass-strong) !important;
+    color: var(--nz-text-strong) !important;
+    border-color: var(--nz-border-default) !important;
+  }
+}

@@ -1,0 +1,645 @@
+/* ============================================================
+   NTIZAR UI PACK — componentes interactivos
+   Depende de: ntizar.css
+
+   CSS-only siempre que es posible. Donde no, marcamos con
+   convención de estado: .is-open / .is-active / [aria-*].
+
+   API pública:
+     .nz-modal, .nz-modal__overlay, .nz-modal__panel, .nz-modal__close
+        - <dialog class="nz-modal"> nativo (recomendado)
+        - o div con .is-open
+     .nz-drawer (--left, --right) con .is-open
+     .nz-tabs, .nz-tabs__list, .nz-tab (--active), .nz-tabs__panel
+     .nz-accordion, .nz-accordion__item, summary, body
+        - usa <details>/<summary> nativo
+     .nz-dropdown, .nz-dropdown__menu, .nz-dropdown__item
+        - usa [popover] o .is-open
+     .nz-toast, .nz-toast-stack (--top-right, --top-center, --bottom-right)
+     .nz-tooltip[data-tip] (CSS-only via data-attr)
+     .nz-breadcrumbs, .nz-breadcrumbs__item, .nz-breadcrumbs__sep
+     .nz-segmented, .nz-segmented__option (radio inputs ocultos)
+     .nz-chip (chip dismissible) + .nz-chip__remove
+     .nz-pagination, .nz-pagination__item (--active, --disabled)
+     .nz-tag-input, .nz-tag-input__field
+     .nz-command-bar (búsqueda tipo cmd-K)
+     .nz-spinner (CSS-only)
+     .nz-divider--label (separador con texto centrado)
+   ============================================================ */
+
+@layer ntizar.components {
+
+  /* ---------- spinner ---------- */
+  .nz :where(.nz-spinner) {
+    --nz-spinner-size: 1.25rem;
+    --nz-spinner-thickness: 2px;
+    --nz-spinner-color: var(--nz-color-brand);
+    width: var(--nz-spinner-size);
+    height: var(--nz-spinner-size);
+    border-radius: 50%;
+    border: var(--nz-spinner-thickness) solid color-mix(in srgb, var(--nz-spinner-color) 22%, transparent);
+    border-top-color: var(--nz-spinner-color);
+    animation: nz-ui-spin 0.85s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .nz :where(.nz-spinner--lg) { --nz-spinner-size: 2.25rem; --nz-spinner-thickness: 3px; }
+  .nz :where(.nz-spinner--accent) { --nz-spinner-color: var(--nz-color-accent); }
+  @keyframes nz-ui-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .nz :where(.nz-spinner) { animation-duration: 4s; }
+  }
+
+  /* ---------- divider con label ---------- */
+  .nz :where(.nz-divider--label) {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    height: auto;
+    background: transparent;
+    color: var(--nz-text-muted);
+    font-size: var(--nz-text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .nz :where(.nz-divider--label)::before,
+  .nz :where(.nz-divider--label)::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--nz-border-soft);
+  }
+
+  /* ---------- breadcrumbs ---------- */
+  .nz :where(.nz-breadcrumbs) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0; margin: 0;
+    font-size: var(--nz-text-sm);
+    color: var(--nz-text-muted);
+  }
+  .nz :where(.nz-breadcrumbs__item a) {
+    color: var(--nz-text-muted);
+    text-decoration: none;
+    border-radius: var(--nz-radius-sm);
+    padding: 0.15rem 0.35rem;
+    transition: background var(--nz-duration-fast) var(--nz-ease-standard),
+                color var(--nz-duration-fast) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-breadcrumbs__item a):hover {
+    background: var(--nz-surface-soft);
+    color: var(--nz-text-strong);
+  }
+  .nz :where(.nz-breadcrumbs__item[aria-current="page"]) {
+    color: var(--nz-text-strong);
+    font-weight: 700;
+  }
+  .nz :where(.nz-breadcrumbs__sep) {
+    color: var(--nz-border-strong);
+  }
+
+  /* ---------- chip ---------- */
+  .nz :where(.nz-chip) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.55rem 0.3rem 0.75rem;
+    background: var(--nz-surface-brand-soft);
+    border: 1px solid color-mix(in srgb, var(--nz-color-brand) 22%, transparent);
+    border-radius: var(--nz-radius-pill);
+    color: var(--nz-status-info-text);
+    font-size: var(--nz-text-xs);
+    font-weight: 700;
+  }
+  .nz :where(.nz-chip--accent) {
+    background: var(--nz-surface-accent-soft);
+    border-color: color-mix(in srgb, var(--nz-color-accent) 22%, transparent);
+    color: var(--nz-color-accent-strong);
+  }
+  .nz :where(.nz-chip--neutral) {
+    background: var(--nz-surface-soft);
+    border-color: var(--nz-border-soft);
+    color: var(--nz-text-default);
+  }
+  .nz :where(.nz-chip__remove) {
+    display: inline-grid;
+    place-items: center;
+    width: 1rem; height: 1rem;
+    border: 0; border-radius: 50%;
+    background: rgba(0, 0, 0, 0.08);
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.7rem;
+    line-height: 1;
+  }
+  .nz :where(.nz-chip__remove):hover { background: rgba(0, 0, 0, 0.16); }
+
+  /* ---------- segmented control ----------
+     Ideal con radios:
+     <div class="nz-segmented">
+       <label class="nz-segmented__option"><input type="radio" name="g" checked><span>Día</span></label>
+       <label class="nz-segmented__option"><input type="radio" name="g"><span>Semana</span></label>
+       <label class="nz-segmented__option"><input type="radio" name="g"><span>Mes</span></label>
+     </div>
+  */
+  .nz :where(.nz-segmented) {
+    display: inline-flex;
+    padding: 0.3rem;
+    gap: 0.2rem;
+    background: var(--nz-surface-soft);
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-pill);
+  }
+  .nz :where(.nz-segmented__option) {
+    position: relative;
+    cursor: pointer;
+    color: var(--nz-text-muted);
+    font-size: var(--nz-text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .nz :where(.nz-segmented__option) > input {
+    position: absolute;
+    opacity: 0; pointer-events: none;
+    width: 1px; height: 1px;
+  }
+  .nz :where(.nz-segmented__option) > span {
+    display: inline-block;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--nz-radius-pill);
+    transition: background var(--nz-duration-fast) var(--nz-ease-standard),
+                color var(--nz-duration-fast) var(--nz-ease-standard),
+                box-shadow var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-segmented__option) > input:checked + span {
+    background: var(--nz-gradient-brand);
+    color: #fff;
+    box-shadow: var(--nz-shadow-brand);
+  }
+  .nz :where(.nz-segmented__option) > input:focus-visible + span { box-shadow: var(--nz-ring); }
+
+  /* ---------- pagination ---------- */
+  .nz :where(.nz-pagination) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .nz :where(.nz-pagination__item) {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0 0.55rem;
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-md);
+    background: var(--nz-surface-base);
+    color: var(--nz-text-default);
+    font-size: var(--nz-text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .nz :where(.nz-pagination__item):hover { background: var(--nz-surface-soft); color: var(--nz-text-strong); }
+  .nz :where(.nz-pagination__item--active) {
+    background: var(--nz-gradient-brand);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: var(--nz-shadow-brand);
+  }
+  .nz :where(.nz-pagination__item--disabled) {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  /* ---------- tooltip CSS-only ----------
+     <span class="nz-tooltip" data-tip="Texto breve">trigger</span>
+  */
+  .nz :where(.nz-tooltip) {
+    position: relative;
+    display: inline-flex;
+  }
+  .nz :where(.nz-tooltip)::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translate(-50%, 0.25rem);
+    padding: 0.4rem 0.6rem;
+    background: var(--nz-color-slate-900);
+    color: #fff;
+    font-size: var(--nz-text-xs);
+    font-weight: 600;
+    line-height: 1.3;
+    border-radius: var(--nz-radius-sm);
+    white-space: nowrap;
+    box-shadow: var(--nz-shadow-md);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--nz-duration-fast) var(--nz-ease-standard),
+                transform var(--nz-duration-fast) var(--nz-ease-standard);
+    z-index: 50;
+  }
+  .nz :where(.nz-tooltip):hover::after,
+  .nz :where(.nz-tooltip):focus-visible::after {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  .nz :where(.nz-tooltip--bottom)::after {
+    bottom: auto;
+    top: calc(100% + 0.5rem);
+  }
+  .nz[data-nz-theme="dark"] :where(.nz-tooltip)::after {
+    background: var(--nz-color-slate-50);
+    color: var(--nz-color-slate-900);
+  }
+
+  /* ---------- tabs ----------
+     <div class="nz-tabs">
+       <div class="nz-tabs__list" role="tablist">
+         <button class="nz-tab nz-tab--active" role="tab" aria-selected="true">A</button>
+         <button class="nz-tab" role="tab" aria-selected="false">B</button>
+       </div>
+       <div class="nz-tabs__panel" role="tabpanel">…</div>
+     </div>
+  */
+  .nz :where(.nz-tabs) { display: grid; gap: var(--nz-space-4); }
+  .nz :where(.nz-tabs__list) {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--nz-border-soft);
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .nz :where(.nz-tab) {
+    position: relative;
+    padding: 0.7rem 1rem;
+    border: 0;
+    background: transparent;
+    color: var(--nz-text-muted);
+    font-size: var(--nz-text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: var(--nz-radius-sm) var(--nz-radius-sm) 0 0;
+    white-space: nowrap;
+    transition: color var(--nz-duration-fast) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-tab):hover { color: var(--nz-text-strong); }
+  .nz :where(.nz-tab[aria-selected="true"], .nz-tab.nz-tab--active) {
+    color: var(--nz-text-strong);
+  }
+  .nz :where(.nz-tab[aria-selected="true"]::after, .nz-tab--active::after) {
+    content: "";
+    position: absolute;
+    left: 0.5rem; right: 0.5rem; bottom: -1px;
+    height: 2px;
+    background: var(--nz-gradient-brand);
+    border-radius: 2px;
+  }
+
+  /* ---------- accordion (basado en <details>/<summary>) ---------- */
+  .nz :where(.nz-accordion) {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .nz :where(.nz-accordion__item) {
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-md);
+    background: var(--nz-surface-base);
+    overflow: hidden;
+    transition: border-color var(--nz-duration-base) var(--nz-ease-standard),
+                box-shadow var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-accordion__item)[open] {
+    border-color: var(--nz-border-default);
+    box-shadow: var(--nz-shadow-sm);
+  }
+  .nz :where(.nz-accordion__item) > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: var(--nz-space-3) var(--nz-space-4);
+    font-weight: 700;
+    color: var(--nz-text-strong);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--nz-space-3);
+  }
+  .nz :where(.nz-accordion__item) > summary::-webkit-details-marker { display: none; }
+  .nz :where(.nz-accordion__item) > summary::after {
+    content: "";
+    width: 0.85rem; height: 0.85rem;
+    background: currentColor;
+    color: var(--nz-text-muted);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center/contain no-repeat;
+    transition: transform var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-accordion__item)[open] > summary::after { transform: rotate(180deg); }
+  .nz :where(.nz-accordion__body) {
+    padding: 0 var(--nz-space-4) var(--nz-space-4);
+    color: var(--nz-text-default);
+  }
+
+  /* ---------- modal ----------
+     RECOMENDADO: <dialog class="nz-modal"> nativo
+     Alternativa con div: <div class="nz-modal is-open" role="dialog" aria-modal="true">
+  */
+  .nz :where(.nz-modal) {
+    /* dialog nativo */
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    max-width: min(40rem, calc(100vw - 2rem));
+    width: 100%;
+    border-radius: var(--nz-radius-xl);
+  }
+  .nz :where(.nz-modal)::backdrop {
+    background: rgba(2, 6, 23, 0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  /* Fallback para div + .is-open */
+  .nz :where(div.nz-modal) {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    place-items: center;
+    background: rgba(2, 6, 23, 0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    padding: 1rem;
+  }
+  .nz :where(div.nz-modal.is-open) { display: grid; }
+
+  .nz :where(.nz-modal__panel) {
+    background: var(--nz-surface-glass-strong);
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-xl);
+    box-shadow: var(--nz-shadow-lg), var(--nz-glass-stroke);
+    padding: var(--nz-space-6);
+    width: 100%;
+    max-width: 36rem;
+    display: grid;
+    gap: var(--nz-space-4);
+    animation: nz-ui-pop var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-modal__panel) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur-strong) saturate(1.3);
+      backdrop-filter: var(--nz-backdrop-blur-strong) saturate(1.3);
+    }
+  }
+  @keyframes nz-ui-pop {
+    from { opacity: 0; transform: translateY(0.5rem) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .nz :where(.nz-modal__close) {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    width: 2rem; height: 2rem;
+    border-radius: 50%;
+    border: 0;
+    background: var(--nz-surface-soft);
+    color: var(--nz-text-strong);
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+  .nz :where(.nz-modal__close):hover { background: var(--nz-surface-base); }
+
+  /* ---------- drawer ---------- */
+  .nz :where(.nz-drawer) {
+    position: fixed;
+    top: 0; bottom: 0;
+    z-index: 90;
+    width: min(24rem, 100vw);
+    background: var(--nz-surface-glass-strong);
+    border: 1px solid var(--nz-border-default);
+    box-shadow: var(--nz-shadow-lg), var(--nz-glass-stroke);
+    padding: var(--nz-space-5);
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-drawer--right) {
+    right: 0; left: auto;
+    transform: translateX(100%);
+  }
+  .nz :where(.nz-drawer.is-open) { transform: translateX(0); }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-drawer) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur-strong) saturate(1.3);
+      backdrop-filter: var(--nz-backdrop-blur-strong) saturate(1.3);
+    }
+  }
+
+  /* ---------- dropdown menu ----------
+     <div class="nz-dropdown">
+       <button class="nz-btn nz-btn--secondary">Acciones ▾</button>
+       <div class="nz-dropdown__menu is-open">
+         <button class="nz-dropdown__item">Editar</button>
+         …
+       </div>
+     </div>
+  */
+  .nz :where(.nz-dropdown) {
+    position: relative;
+    display: inline-block;
+  }
+  .nz :where(.nz-dropdown__menu) {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 0;
+    z-index: 60;
+    min-width: 12rem;
+    padding: 0.4rem;
+    background: var(--nz-surface-glass-strong);
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-md);
+    box-shadow: var(--nz-shadow-md), var(--nz-glass-stroke);
+    display: none;
+    flex-direction: column;
+    gap: 0.15rem;
+    animation: nz-ui-pop var(--nz-duration-fast) var(--nz-ease-standard);
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-dropdown__menu) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+      backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+    }
+  }
+  .nz :where(.nz-dropdown__menu.is-open),
+  .nz :where(.nz-dropdown[open]) > .nz-dropdown__menu { display: flex; }
+  .nz :where(.nz-dropdown__menu--right) { left: auto; right: 0; }
+  .nz :where(.nz-dropdown__item) {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.75rem;
+    border: 0;
+    background: transparent;
+    border-radius: var(--nz-radius-sm);
+    color: var(--nz-text-default);
+    font-size: var(--nz-text-sm);
+    text-align: left;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .nz :where(.nz-dropdown__item):hover {
+    background: var(--nz-surface-brand-soft);
+    color: var(--nz-text-strong);
+  }
+  .nz :where(.nz-dropdown__item--danger):hover {
+    background: var(--nz-status-danger-soft);
+    color: var(--nz-status-danger-text);
+  }
+  .nz :where(.nz-dropdown__sep) {
+    height: 1px;
+    margin: 0.3rem 0;
+    background: var(--nz-border-soft);
+  }
+
+  /* ---------- toast ----------
+     <div class="nz-toast-stack nz-toast-stack--top-right">
+       <div class="nz-toast nz-toast--success">…</div>
+     </div>
+  */
+  .nz :where(.nz-toast-stack) {
+    position: fixed;
+    z-index: 110;
+    display: grid;
+    gap: 0.6rem;
+    padding: 1rem;
+    pointer-events: none;
+  }
+  .nz :where(.nz-toast-stack--top-right)    { top: 0; right: 0; }
+  .nz :where(.nz-toast-stack--top-center)   { top: 0; left: 50%; transform: translateX(-50%); }
+  .nz :where(.nz-toast-stack--bottom-right) { bottom: 0; right: 0; }
+  .nz :where(.nz-toast-stack--bottom-left)  { bottom: 0; left: 0; }
+
+  .nz :where(.nz-toast) {
+    pointer-events: auto;
+    min-width: 16rem;
+    max-width: 22rem;
+    padding: 0.85rem 1rem 0.85rem 1.1rem;
+    background: var(--nz-surface-glass-strong);
+    border: 1px solid var(--nz-border-default);
+    border-left: 4px solid var(--nz-color-brand);
+    border-radius: var(--nz-radius-md);
+    box-shadow: var(--nz-shadow-lg), var(--nz-glass-stroke);
+    color: var(--nz-text-strong);
+    font-size: var(--nz-text-sm);
+    animation: nz-ui-toast-in var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-toast) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+      backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+    }
+  }
+  .nz :where(.nz-toast__title) { font-weight: 700; }
+  .nz :where(.nz-toast__body)  { color: var(--nz-text-default); margin-top: 0.15rem; }
+
+  .nz :where(.nz-toast--success) { border-left-color: var(--nz-color-success); }
+  .nz :where(.nz-toast--warning) { border-left-color: var(--nz-color-warning); }
+  .nz :where(.nz-toast--danger)  { border-left-color: var(--nz-color-danger); }
+  .nz :where(.nz-toast--accent)  { border-left-color: var(--nz-color-accent); }
+
+  @keyframes nz-ui-toast-in {
+    from { opacity: 0; transform: translateY(-0.5rem); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- command bar (cmd-K) ---------- */
+  .nz :where(.nz-command-bar) {
+    width: min(36rem, 100%);
+    background: var(--nz-surface-glass-strong);
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-lg);
+    box-shadow: var(--nz-shadow-lg), var(--nz-glass-stroke);
+    overflow: hidden;
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-command-bar) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur-strong) saturate(1.3);
+      backdrop-filter: var(--nz-backdrop-blur-strong) saturate(1.3);
+    }
+  }
+  .nz :where(.nz-command-bar__field) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--nz-border-soft);
+  }
+  .nz :where(.nz-command-bar__field) input {
+    flex: 1 1 auto;
+    border: 0;
+    background: transparent;
+    color: var(--nz-text-strong);
+    font-size: var(--nz-text-md);
+  }
+  .nz :where(.nz-command-bar__field) input:focus { outline: none; }
+  .nz :where(.nz-command-bar__group) {
+    padding: 0.4rem 0.5rem;
+  }
+  .nz :where(.nz-command-bar__heading) {
+    padding: 0.5rem 0.75rem 0.25rem;
+    font-size: var(--nz-text-xs);
+    font-weight: 700;
+    color: var(--nz-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .nz :where(.nz-command-bar__item) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--nz-radius-sm);
+    cursor: pointer;
+    color: var(--nz-text-default);
+    font-size: var(--nz-text-sm);
+  }
+  .nz :where(.nz-command-bar__item):hover,
+  .nz :where(.nz-command-bar__item.is-active) {
+    background: var(--nz-surface-brand-soft);
+    color: var(--nz-text-strong);
+  }
+
+  /* ---------- tag input (chips dentro de un campo) ---------- */
+  .nz :where(.nz-tag-input) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-md);
+    background: var(--nz-surface-raised);
+    min-height: 2.75rem;
+    align-items: center;
+    transition: border-color var(--nz-duration-base) var(--nz-ease-standard),
+                box-shadow var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-tag-input):focus-within {
+    border-color: var(--nz-color-brand);
+    box-shadow: var(--nz-ring);
+  }
+  .nz :where(.nz-tag-input__field) {
+    flex: 1 1 8rem;
+    border: 0;
+    background: transparent;
+    color: var(--nz-text-strong);
+    font-size: var(--nz-text-sm);
+    min-width: 6rem;
+  }
+  .nz :where(.nz-tag-input__field):focus { outline: none; }
+}

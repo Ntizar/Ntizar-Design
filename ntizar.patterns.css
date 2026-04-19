@@ -1,0 +1,555 @@
+/* ============================================================
+   NTIZAR PATTERNS PACK — composiciones de página
+   Depende de: ntizar.css (+ opcionalmente ntizar.viz.css para fondos)
+
+   Contiene patrones de alto nivel listos para componer landings,
+   dashboards, app shells, paneles auth, etc. Cada patrón es opt-in
+   y se combina con los componentes del core.
+
+   API pública:
+     .nz-app-shell, .nz-app-shell__sidebar, .nz-app-shell__header, .nz-app-shell__main
+     .nz-hero, .nz-hero--split, .nz-hero--centered, .nz-hero__eyebrow, .nz-hero__title, .nz-hero__sub, .nz-hero__cta
+     .nz-feature-grid, .nz-feature
+     .nz-pricing-grid, .nz-pricing-card (--featured)
+     .nz-faq (usa accordion)
+     .nz-footer, .nz-footer__cols, .nz-footer__col
+     .nz-auth-shell, .nz-auth-shell__panel, .nz-auth-shell__art
+     .nz-empty-state
+     .nz-error-page (404/500)
+     .nz-cta-banner
+     .nz-logo-cloud
+     .nz-stats-banner
+   ============================================================ */
+
+@layer ntizar.components {
+
+  /* ---------- app shell ---------- */
+  .nz :where(.nz-app-shell) {
+    display: grid;
+    grid-template-columns: minmax(0, var(--nz-shell-sidebar, 260px)) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "sidebar header"
+      "sidebar main";
+    min-height: 100dvh;
+    background: var(--nz-surface-page);
+  }
+  .nz :where(.nz-app-shell__sidebar) {
+    grid-area: sidebar;
+    padding: var(--nz-space-5);
+    background: var(--nz-surface-glass);
+    border-right: 1px solid var(--nz-border-soft);
+    display: flex;
+    flex-direction: column;
+    gap: var(--nz-space-4);
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-app-shell__sidebar) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+      backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+    }
+  }
+  .nz :where(.nz-app-shell__header) {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--nz-space-4);
+    padding: var(--nz-space-3) var(--nz-space-5);
+    background: var(--nz-surface-glass);
+    border-bottom: 1px solid var(--nz-border-soft);
+    position: sticky; top: 0; z-index: 20;
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-app-shell__header) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+      backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+    }
+  }
+  .nz :where(.nz-app-shell__main) {
+    grid-area: main;
+    padding: var(--nz-space-6);
+    display: grid;
+    gap: var(--nz-space-5);
+    min-width: 0;
+  }
+  .nz :where(.nz-nav-item) {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--nz-radius-sm);
+    color: var(--nz-text-muted);
+    font-weight: 600; font-size: var(--nz-text-sm);
+    text-decoration: none;
+    transition: background var(--nz-duration-fast) var(--nz-ease-standard),
+                color var(--nz-duration-fast) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-nav-item):hover { background: var(--nz-surface-soft); color: var(--nz-text-strong); }
+  .nz :where(.nz-nav-item.is-active) {
+    background: var(--nz-surface-brand-soft);
+    color: var(--nz-status-info-text);
+  }
+  .nz :where(.nz-nav-item)[data-nz-accent].is-active {
+    background: var(--nz-surface-accent-soft);
+    color: var(--nz-color-accent-strong);
+  }
+  .nz :where(.nz-nav-section) {
+    padding: 0.5rem 0.75rem 0.25rem;
+    font-size: var(--nz-text-xs);
+    font-weight: 700;
+    color: var(--nz-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  @media (max-width: 900px) {
+    .nz :where(.nz-app-shell) {
+      grid-template-columns: 1fr;
+      grid-template-areas: "header" "main";
+    }
+    .nz :where(.nz-app-shell__sidebar) { display: none; }
+  }
+
+  /* ---------- hero ---------- */
+  .nz :where(.nz-hero) {
+    position: relative;
+    padding: clamp(3rem, 8vw, 6rem) 0;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .nz :where(.nz-hero__inner) {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: grid;
+    gap: var(--nz-space-5);
+  }
+  .nz :where(.nz-hero--centered) .nz-hero__inner {
+    text-align: center;
+    justify-items: center;
+    max-width: 920px;
+  }
+  .nz :where(.nz-hero--split) .nz-hero__inner {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  @media (max-width: 880px) {
+    .nz :where(.nz-hero--split) .nz-hero__inner { grid-template-columns: 1fr; }
+  }
+  .nz :where(.nz-hero__eyebrow) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.7rem;
+    background: var(--nz-surface-brand-soft);
+    border: 1px solid color-mix(in srgb, var(--nz-color-brand) 22%, transparent);
+    border-radius: var(--nz-radius-pill);
+    color: var(--nz-status-info-text);
+    font-size: var(--nz-text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    width: max-content;
+  }
+  .nz :where(.nz-hero--centered) .nz-hero__eyebrow { margin-inline: auto; }
+  .nz :where(.nz-hero__title) {
+    font-family: var(--nz-font-display);
+    font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--nz-text-strong);
+  }
+  .nz :where(.nz-hero__title) > .nz-accent {
+    background: var(--nz-gradient-accent);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+  }
+  .nz :where(.nz-hero__sub) {
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    color: var(--nz-text-muted);
+    max-width: 60ch;
+  }
+  .nz :where(.nz-hero--centered) .nz-hero__sub { margin-inline: auto; }
+  .nz :where(.nz-hero__cta) {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .nz :where(.nz-hero__visual) {
+    position: relative;
+    min-height: 320px;
+    border-radius: var(--nz-radius-xl);
+    overflow: hidden;
+  }
+
+  /* ---------- features ---------- */
+  .nz :where(.nz-feature-grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--nz-space-5);
+  }
+  .nz :where(.nz-feature) {
+    padding: var(--nz-space-5);
+    background: var(--nz-surface-glass);
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-lg);
+    box-shadow: var(--nz-shadow-sm), var(--nz-glass-stroke);
+    display: grid;
+    gap: 0.75rem;
+    transition: transform var(--nz-duration-base) var(--nz-ease-standard),
+                border-color var(--nz-duration-base) var(--nz-ease-standard),
+                box-shadow var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-feature):hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--nz-color-brand) 30%, var(--nz-border-soft));
+    box-shadow: var(--nz-shadow-md);
+  }
+  .nz :where(.nz-feature__icon) {
+    width: 2.5rem; height: 2.5rem;
+    border-radius: var(--nz-radius-md);
+    display: grid; place-items: center;
+    background: var(--nz-surface-brand-soft);
+    color: var(--nz-status-info-text);
+    font-size: 1.2rem;
+  }
+  .nz :where(.nz-feature--accent) .nz-feature__icon {
+    background: var(--nz-surface-accent-soft);
+    color: var(--nz-color-accent-strong);
+  }
+  .nz :where(.nz-feature__title) {
+    font-weight: 700;
+    color: var(--nz-text-strong);
+    font-size: var(--nz-text-md);
+  }
+  .nz :where(.nz-feature__body) {
+    color: var(--nz-text-muted);
+    font-size: var(--nz-text-sm);
+    line-height: 1.55;
+  }
+
+  /* ---------- pricing ---------- */
+  .nz :where(.nz-pricing-grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--nz-space-5);
+    align-items: stretch;
+  }
+  .nz :where(.nz-pricing-card) {
+    position: relative;
+    padding: var(--nz-space-6);
+    background: var(--nz-surface-glass);
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-xl);
+    box-shadow: var(--nz-shadow-sm);
+    display: grid;
+    gap: var(--nz-space-4);
+  }
+  .nz :where(.nz-pricing-card--featured) {
+    border-color: transparent;
+    background: var(--nz-surface-glass-strong);
+    box-shadow: var(--nz-shadow-lg), 0 0 0 1px color-mix(in srgb, var(--nz-color-accent) 35%, transparent) inset;
+    transform: translateY(-6px);
+  }
+  .nz :where(.nz-pricing-card__name) {
+    font-weight: 700;
+    color: var(--nz-text-strong);
+    font-size: var(--nz-text-md);
+  }
+  .nz :where(.nz-pricing-card__price) {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-family: var(--nz-font-display);
+    color: var(--nz-text-strong);
+  }
+  .nz :where(.nz-pricing-card__price) > .nz-pricing-card__amount {
+    font-size: clamp(2.5rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .nz :where(.nz-pricing-card--featured) .nz-pricing-card__amount {
+    background: var(--nz-gradient-accent);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+  }
+  .nz :where(.nz-pricing-card__period) {
+    color: var(--nz-text-muted);
+    font-size: var(--nz-text-sm);
+  }
+  .nz :where(.nz-pricing-card__list) {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: grid;
+    gap: 0.55rem;
+    color: var(--nz-text-default);
+    font-size: var(--nz-text-sm);
+  }
+  .nz :where(.nz-pricing-card__list) li {
+    display: flex;
+    gap: 0.55rem;
+    align-items: center;
+  }
+  .nz :where(.nz-pricing-card__list) li::before {
+    content: "";
+    width: 1rem; height: 1rem;
+    flex: 0 0 auto;
+    background: var(--nz-color-success);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  .nz :where(.nz-pricing-card__badge) {
+    position: absolute;
+    top: -0.7rem;
+    right: 1.5rem;
+    padding: 0.25rem 0.7rem;
+    background: var(--nz-gradient-accent);
+    color: #fff;
+    border-radius: var(--nz-radius-pill);
+    font-size: var(--nz-text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    box-shadow: var(--nz-shadow-accent);
+  }
+
+  /* ---------- faq ---------- */
+  .nz :where(.nz-faq) {
+    max-width: 56rem;
+    margin: 0 auto;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  /* ---------- footer ---------- */
+  .nz :where(.nz-footer) {
+    padding: var(--nz-space-7) 0 var(--nz-space-5);
+    background: var(--nz-surface-glass);
+    border-top: 1px solid var(--nz-border-soft);
+    color: var(--nz-text-muted);
+    font-size: var(--nz-text-sm);
+  }
+  .nz :where(.nz-footer__inner) {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: grid;
+    gap: var(--nz-space-6);
+  }
+  .nz :where(.nz-footer__cols) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: var(--nz-space-5);
+  }
+  .nz :where(.nz-footer__col) {
+    display: grid;
+    gap: 0.55rem;
+  }
+  .nz :where(.nz-footer__col) > h4 {
+    font-size: var(--nz-text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--nz-text-strong);
+    margin: 0 0 0.35rem;
+  }
+  .nz :where(.nz-footer__col) a {
+    color: var(--nz-text-muted);
+    text-decoration: none;
+  }
+  .nz :where(.nz-footer__col) a:hover { color: var(--nz-text-strong); }
+  .nz :where(.nz-footer__bottom) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--nz-space-3);
+    padding-top: var(--nz-space-4);
+    border-top: 1px solid var(--nz-border-soft);
+    color: var(--nz-text-soft);
+    font-size: var(--nz-text-xs);
+  }
+
+  /* ---------- auth shell (split) ---------- */
+  .nz :where(.nz-auth-shell) {
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+  @media (max-width: 880px) {
+    .nz :where(.nz-auth-shell) { grid-template-columns: 1fr; }
+    .nz :where(.nz-auth-shell__art) { display: none; }
+  }
+  .nz :where(.nz-auth-shell__panel) {
+    display: grid;
+    place-items: center;
+    padding: var(--nz-space-6);
+    background: var(--nz-surface-page);
+  }
+  .nz :where(.nz-auth-shell__panel) > form,
+  .nz :where(.nz-auth-shell__panel) > .nz-card {
+    width: min(24rem, 100%);
+  }
+  .nz :where(.nz-auth-shell__art) {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at top right, color-mix(in srgb, var(--nz-color-accent) 55%, transparent), transparent 60%),
+      radial-gradient(ellipse at bottom left, color-mix(in srgb, var(--nz-color-brand) 55%, transparent), transparent 60%),
+      var(--nz-color-slate-900);
+    color: #fff;
+    padding: var(--nz-space-7);
+    display: grid;
+    align-content: center;
+  }
+  .nz :where(.nz-auth-shell__art) > * { position: relative; z-index: 1; max-width: 32rem; }
+  .nz :where(.nz-auth-shell__art) > h2 {
+    font-family: var(--nz-font-display);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0 0 0.75rem;
+  }
+  .nz :where(.nz-auth-shell__art) > p { color: rgba(255,255,255,0.78); }
+
+  /* ---------- empty state ---------- */
+  .nz :where(.nz-empty-state) {
+    text-align: center;
+    padding: var(--nz-space-7) var(--nz-space-5);
+    display: grid;
+    gap: var(--nz-space-3);
+    justify-items: center;
+    color: var(--nz-text-muted);
+  }
+  .nz :where(.nz-empty-state__icon) {
+    width: 3.25rem; height: 3.25rem;
+    display: grid; place-items: center;
+    border-radius: var(--nz-radius-lg);
+    background: var(--nz-surface-soft);
+    color: var(--nz-text-muted);
+    font-size: 1.5rem;
+  }
+  .nz :where(.nz-empty-state__title) {
+    font-size: var(--nz-text-md);
+    font-weight: 700;
+    color: var(--nz-text-strong);
+  }
+
+  /* ---------- error page ---------- */
+  .nz :where(.nz-error-page) {
+    min-height: 60dvh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: var(--nz-space-6);
+  }
+  .nz :where(.nz-error-page__code) {
+    font-family: var(--nz-font-display);
+    font-size: clamp(5rem, 14vw, 9rem);
+    font-weight: 800;
+    line-height: 1;
+    background: var(--nz-gradient-aurora);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+  }
+  .nz :where(.nz-error-page__title) {
+    font-family: var(--nz-font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--nz-text-strong);
+    margin: 0.5rem 0;
+  }
+  .nz :where(.nz-error-page__sub) {
+    color: var(--nz-text-muted);
+    max-width: 40ch;
+    margin: 0 auto var(--nz-space-4);
+  }
+
+  /* ---------- cta banner ---------- */
+  .nz :where(.nz-cta-banner) {
+    position: relative;
+    padding: var(--nz-space-6);
+    border-radius: var(--nz-radius-xl);
+    background: var(--nz-gradient-aurora);
+    color: #fff;
+    overflow: hidden;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--nz-space-5);
+    align-items: center;
+    box-shadow: var(--nz-shadow-lg);
+  }
+  .nz :where(.nz-cta-banner)::before {
+    content: "";
+    position: absolute;
+    inset: -25%;
+    background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25), transparent 55%);
+    z-index: -1;
+  }
+  .nz :where(.nz-cta-banner__title) {
+    font-family: var(--nz-font-display);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0 0 0.35rem;
+  }
+  .nz :where(.nz-cta-banner__sub) { color: rgba(255, 255, 255, 0.86); }
+  @media (max-width: 700px) {
+    .nz :where(.nz-cta-banner) { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- logo cloud ---------- */
+  .nz :where(.nz-logo-cloud) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+    gap: var(--nz-space-5);
+    align-items: center;
+    justify-items: center;
+    padding: var(--nz-space-5) 0;
+    opacity: 0.8;
+  }
+  .nz :where(.nz-logo-cloud) > * {
+    color: var(--nz-text-muted);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    filter: grayscale(100%);
+    transition: filter var(--nz-duration-base) var(--nz-ease-standard),
+                color var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-logo-cloud) > *:hover {
+    filter: grayscale(0%);
+    color: var(--nz-text-strong);
+  }
+
+  /* ---------- stats banner ---------- */
+  .nz :where(.nz-stats-banner) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+    gap: var(--nz-space-5);
+    padding: var(--nz-space-6);
+    background: var(--nz-surface-glass);
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-xl);
+    text-align: center;
+  }
+  .nz :where(.nz-stats-banner) > div { display: grid; gap: 0.25rem; }
+  .nz :where(.nz-stats-banner) strong {
+    font-family: var(--nz-font-display);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 800;
+    background: var(--nz-gradient-brand);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+  }
+  .nz :where(.nz-stats-banner) span {
+    color: var(--nz-text-muted);
+    font-size: var(--nz-text-sm);
+  }
+}

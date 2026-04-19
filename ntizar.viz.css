@@ -1,0 +1,255 @@
+/* ============================================================
+   NTIZAR VIZ PACK
+   Depende de: ntizar.css
+
+   Para escenas 3D (three.js, Babylon, react-three-fiber),
+   shaders, generative art, fondos animados e ilustraciones.
+
+   API pública:
+     .nz-stage              -> contenedor full-bleed para canvas/WebGL
+     .nz-stage--hero | --md | --aspect-16x9 | --aspect-1x1
+     .nz-stage--glass-frame -> stage con marco glass
+     .nz-stage__canvas      -> el <canvas> (auto width/height 100%)
+     .nz-stage__hud         -> capa HTML encima del canvas
+     .nz-stage__caption     -> texto inferior
+
+     .nz-aurora-bg          -> fondo animado azul+violeta+naranja
+     .nz-aurora-bg--static  -> sin animación
+     .nz-aurora-bg--soft    -> menos saturado
+     .nz-grid-bg            -> fondo de cuadrícula sutil
+     .nz-dot-bg             -> fondo de puntos
+     .nz-noise              -> capa de ruido sutil (overlay)
+
+     .nz-orb                -> esfera radial decorativa (CSS-only)
+     .nz-orb--brand | --accent | --aurora
+     .nz-glow-ring          -> anillo glow
+   ============================================================ */
+
+@layer ntizar.components {
+
+  .nz :where(.nz-stage) {
+    position: relative;
+    width: 100%;
+    height: clamp(20rem, 50vw, 32rem);
+    border-radius: var(--nz-radius-xl);
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      radial-gradient(circle at 18% 22%, color-mix(in srgb, var(--nz-color-brand) 26%, transparent), transparent 32%),
+      radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--nz-color-violet-500) 22%, transparent), transparent 28%),
+      radial-gradient(circle at 78% 82%, color-mix(in srgb, var(--nz-color-accent) 26%, transparent), transparent 32%),
+      linear-gradient(135deg, var(--nz-surface-page), var(--nz-surface-base));
+  }
+
+  .nz :where(.nz-stage--hero)        { height: clamp(26rem, 70vh, 46rem); }
+  .nz :where(.nz-stage--md)          { height: 22rem; }
+  .nz :where(.nz-stage--aspect-16x9) { height: auto; aspect-ratio: 16 / 9; }
+  .nz :where(.nz-stage--aspect-1x1)  { height: auto; aspect-ratio: 1 / 1; }
+  .nz :where(.nz-stage--aspect-21x9) { height: auto; aspect-ratio: 21 / 9; }
+
+  .nz :where(.nz-stage--glass-frame) {
+    border: 1px solid var(--nz-border-default);
+    box-shadow: var(--nz-shadow-lg), var(--nz-glass-stroke);
+    padding: var(--nz-space-3);
+  }
+  .nz :where(.nz-stage--glass-frame) > .nz-stage__canvas {
+    border-radius: calc(var(--nz-radius-xl) - var(--nz-space-3));
+  }
+
+  .nz :where(.nz-stage__canvas),
+  .nz :where(.nz-stage > canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+
+  .nz :where(.nz-stage__hud) {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--nz-space-5);
+    pointer-events: none;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(2, 6, 23, 0.5);
+  }
+  .nz :where(.nz-stage__hud) > * { pointer-events: auto; }
+
+  .nz :where(.nz-stage__caption) {
+    font-size: var(--nz-text-sm);
+    color: var(--nz-text-muted);
+    margin-top: 0.5rem;
+  }
+
+  /* ---------- AURORA BG (fondo animado decorativo) ---------- */
+  .nz :where(.nz-aurora-bg) {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--nz-surface-page);
+  }
+  .nz :where(.nz-aurora-bg)::before,
+  .nz :where(.nz-aurora-bg)::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.65;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .nz :where(.nz-aurora-bg)::before {
+    width: 38rem;
+    height: 38rem;
+    top: -10rem;
+    left: -8rem;
+    background: radial-gradient(circle, var(--nz-color-blue-500), transparent 60%);
+    animation: nz-aurora-drift-1 18s ease-in-out infinite alternate;
+  }
+  .nz :where(.nz-aurora-bg)::after {
+    width: 34rem;
+    height: 34rem;
+    right: -10rem;
+    bottom: -8rem;
+    background: radial-gradient(circle, var(--nz-color-accent), transparent 60%);
+    animation: nz-aurora-drift-2 22s ease-in-out infinite alternate;
+  }
+  .nz :where(.nz-aurora-bg) > * { position: relative; z-index: 1; }
+
+  .nz :where(.nz-aurora-bg--soft)::before,
+  .nz :where(.nz-aurora-bg--soft)::after { opacity: 0.35; }
+
+  .nz :where(.nz-aurora-bg--static)::before,
+  .nz :where(.nz-aurora-bg--static)::after { animation: none; }
+
+  @keyframes nz-aurora-drift-1 {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(6rem, 4rem) scale(1.1); }
+  }
+  @keyframes nz-aurora-drift-2 {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-5rem, -3rem) scale(1.08); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nz :where(.nz-aurora-bg)::before,
+    .nz :where(.nz-aurora-bg)::after { animation: none; }
+  }
+
+  /* ---------- GRID & DOT BACKGROUNDS ---------- */
+  .nz :where(.nz-grid-bg) {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--nz-text-muted) 12%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--nz-text-muted) 12%, transparent) 1px, transparent 1px);
+    background-size: 2.5rem 2.5rem;
+  }
+  .nz :where(.nz-grid-bg--lg) { background-size: 4rem 4rem; }
+  .nz :where(.nz-grid-bg--mask) {
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 40%, transparent 80%);
+            mask-image: radial-gradient(ellipse at center, #000 40%, transparent 80%);
+  }
+
+  .nz :where(.nz-dot-bg) {
+    background-image: radial-gradient(color-mix(in srgb, var(--nz-text-muted) 24%, transparent) 1px, transparent 1px);
+    background-size: 1.25rem 1.25rem;
+  }
+
+  /* ---------- NOISE overlay (sutil, sin imagen) ---------- */
+  .nz :where(.nz-noise) {
+    position: relative;
+    isolation: isolate;
+  }
+  .nz :where(.nz-noise)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+  .nz :where(.nz-noise) > * { position: relative; z-index: 1; }
+
+  /* ---------- ORBS (decorativos) ---------- */
+  .nz :where(.nz-orb) {
+    --nz-orb-size: 14rem;
+    --nz-orb-c1: var(--nz-color-blue-400);
+    --nz-orb-c2: var(--nz-color-blue-700);
+    width: var(--nz-orb-size);
+    height: var(--nz-orb-size);
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--nz-orb-c1), var(--nz-orb-c2) 70%);
+    filter: blur(0.5px);
+    box-shadow:
+      inset -8px -16px 36px rgba(0, 0, 0, 0.3),
+      inset 8px 8px 28px rgba(255, 255, 255, 0.25),
+      0 30px 60px rgba(15, 23, 42, 0.25);
+  }
+  .nz :where(.nz-orb--accent) {
+    --nz-orb-c1: var(--nz-color-orange-300);
+    --nz-orb-c2: var(--nz-color-orange-600);
+  }
+  .nz :where(.nz-orb--aurora) {
+    background: radial-gradient(circle at 28% 28%,
+      var(--nz-color-blue-400) 0%,
+      var(--nz-color-violet-500) 45%,
+      var(--nz-color-orange-500) 100%);
+  }
+  .nz :where(.nz-orb--sm) { --nz-orb-size: 7rem; }
+  .nz :where(.nz-orb--lg) { --nz-orb-size: 22rem; }
+
+  /* ---------- GLOW RING ---------- */
+  .nz :where(.nz-glow-ring) {
+    --nz-ring-size: 16rem;
+    --nz-ring-thickness: 0.6rem;
+    --nz-ring-c1: var(--nz-color-brand);
+    --nz-ring-c2: var(--nz-color-accent);
+    width: var(--nz-ring-size);
+    height: var(--nz-ring-size);
+    border-radius: 50%;
+    background: conic-gradient(var(--nz-ring-c1), var(--nz-color-violet-500), var(--nz-ring-c2), var(--nz-ring-c1));
+    position: relative;
+    filter: drop-shadow(0 0 30px color-mix(in srgb, var(--nz-color-brand) 40%, transparent));
+    animation: nz-spin 12s linear infinite;
+  }
+  .nz :where(.nz-glow-ring)::before {
+    content: "";
+    position: absolute;
+    inset: var(--nz-ring-thickness);
+    border-radius: 50%;
+    background: var(--nz-surface-page);
+  }
+  @keyframes nz-spin {
+    from { transform: rotate(0); }
+    to   { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nz :where(.nz-glow-ring) { animation: none; }
+  }
+
+  /* ---------- SCANLINE / DATA OVERLAY (estética sci-fi sutil) ---------- */
+  .nz :where(.nz-scanline) {
+    position: relative;
+    isolation: isolate;
+  }
+  .nz :where(.nz-scanline)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 3px,
+      rgba(255, 255, 255, 0.04) 3px,
+      rgba(255, 255, 255, 0.04) 4px
+    );
+    z-index: 0;
+  }
+  .nz :where(.nz-scanline) > * { position: relative; z-index: 1; }
+}

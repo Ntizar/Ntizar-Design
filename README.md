@@ -1,13 +1,58 @@
 # Ntizar Design System
 
-> Aurora v4: un CSS copiable para arrancar apps nuevas sin build, sin dependencias y sin invadir todo el proyecto.
+> Aurora v4.1 **Constellation**: un core CSS copiable + 9 packs opcionales para construir cualquier app web (dashboards, mapas, escenas 3D, landings, formularios, generative art) manteniendo identidad azul + naranja.
 
-![Version](https://img.shields.io/badge/version-4.0.0_Aurora-2563eb)
+![Version](https://img.shields.io/badge/version-4.1.0_Constellation-2563eb)
 ![API](https://img.shields.io/badge/api-namespaced-0f172a)
 ![Modo](https://img.shields.io/badge/theme-light%20%7C%20dark-f97316)
+![Skins](https://img.shields.io/badge/skins-5-7c3aed)
 ![CSS Only](https://img.shields.io/badge/css-only-16a34a)
 
-`CSS-only` · `Opt-in` · `Namespaced` · `Light-first` · `Liquid glass` · `Copiar y usar`
+`CSS-only` · `Opt-in` · `Namespaced` · `Light-first` · `Liquid glass` · `Modular packs`
+
+## Arquitectura Constellation
+
+```
+ntizar.css            -> core (siempre)
+ntizar.themes.css     -> 5 skins (aurora · sunset · midnight · ocean · citrus) + paleta de charts
+ntizar.data.css       -> KPIs, dashboards, progress, meter, skeleton, avatar, timeline
+ntizar.charts.css     -> contenedores para Chart.js/Apex/D3, sparkline + donut CSS-only, paletas
+ntizar.maps.css       -> Leaflet/Mapbox/MapLibre con look Ntizar
+ntizar.viz.css        -> stages para three.js, fondos aurora, orbs, glow ring
+ntizar.motion.css     -> reveal, glow-pulse, aurora-pan, shimmer, marquee, typing, hover-lift
+ntizar.forms.css      -> switch, custom check/radio, range, OTP, file drop, stepper, search
+ntizar.ui.css         -> modal, drawer, tabs, accordion, dropdown, toast, tooltip, command-bar
+ntizar.patterns.css   -> app-shell, hero, pricing, features, faq, footer, auth-shell, empty/error
+```
+
+Cada pack es independiente. Carga 1 o los 9.
+
+## Documentación
+
+- [INDEX.md](INDEX.md) → **mapa para agentes**: "necesito X → archivo Y, clases Z"
+- [USAGE.md](USAGE.md) → **guía narrativa** con escenarios completos (landing, dashboard, mapas, 3D, auth, pricing…)
+- [SYSTEM.md](SYSTEM.md) → **constitución del sistema**: cómo extender, versionar y mantener identidad
+- [demo.html](demo.html) → tour del **core**
+- [gallery.html](gallery.html) → showcase con **todo** (charts + map + 3D + forms + UI + patterns + skin switcher)
+
+## Quick Start (todo activado)
+
+```html
+<link rel="stylesheet" href="ntizar.css">
+<link rel="stylesheet" href="ntizar.themes.css">
+<link rel="stylesheet" href="ntizar.data.css">
+<link rel="stylesheet" href="ntizar.charts.css">
+<link rel="stylesheet" href="ntizar.maps.css">
+<link rel="stylesheet" href="ntizar.viz.css">
+<link rel="stylesheet" href="ntizar.motion.css">
+<link rel="stylesheet" href="ntizar.forms.css">
+<link rel="stylesheet" href="ntizar.ui.css">
+<link rel="stylesheet" href="ntizar.patterns.css">
+
+<body class="nz" data-nz-theme="light" data-nz-skin="aurora">
+  ...
+</body>
+```
 
 ## Learnings De Uso
 

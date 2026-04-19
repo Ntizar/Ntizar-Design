@@ -1,0 +1,422 @@
+/* ============================================================
+   NTIZAR FORMS PACK — controles avanzados
+   Depende de: ntizar.css
+
+   Complementa los .nz-input/.nz-select/.nz-textarea del core.
+
+   API pública:
+     .nz-check, .nz-check__input, .nz-check__label
+     .nz-radio (mismo patrón que .nz-check, semántica radio)
+     .nz-switch, .nz-switch__input, .nz-switch__track, .nz-switch__thumb
+     .nz-range
+     .nz-search (input con icono integrado)
+     .nz-input-group (input + addon antes/después)
+     .nz-input-group__addon
+     .nz-otp, .nz-otp__cell
+     .nz-file, .nz-file__drop, .nz-file__hint
+     .nz-stepper, .nz-stepper__step (--active, --done)
+     .nz-input--lg, .nz-input--sm
+
+   Todos respetan tokens del core y tema actual.
+   ============================================================ */
+
+@layer ntizar.components {
+
+  /* ---------- input size modifiers (extiende core) ---------- */
+  .nz :where(.nz-input--sm, .nz-select--sm, .nz-textarea--sm) {
+    padding: 0.55rem 0.7rem;
+    font-size: var(--nz-text-sm);
+    border-radius: var(--nz-radius-sm);
+  }
+  .nz :where(.nz-input--lg, .nz-select--lg, .nz-textarea--lg) {
+    padding: 1rem 1.1rem;
+    font-size: var(--nz-text-lg);
+  }
+
+  /* ---------- input group (addons) ----------
+     <div class="nz-input-group">
+       <span class="nz-input-group__addon">€</span>
+       <input class="nz-input" />
+       <span class="nz-input-group__addon">,00</span>
+     </div>
+  */
+  .nz :where(.nz-input-group) {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-md);
+    background: var(--nz-surface-raised);
+    overflow: hidden;
+    transition: border-color var(--nz-duration-base) var(--nz-ease-standard),
+                box-shadow var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-input-group):focus-within {
+    border-color: var(--nz-color-brand);
+    box-shadow: var(--nz-ring);
+  }
+  .nz :where(.nz-input-group) > .nz-input,
+  .nz :where(.nz-input-group) > .nz-select {
+    flex: 1 1 auto;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  .nz :where(.nz-input-group__addon) {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.85rem;
+    background: var(--nz-surface-soft);
+    color: var(--nz-text-muted);
+    font-size: var(--nz-text-sm);
+    font-weight: 600;
+    white-space: nowrap;
+    border-left: 1px solid var(--nz-border-soft);
+  }
+  .nz :where(.nz-input-group__addon:first-child) {
+    border-left: 0;
+    border-right: 1px solid var(--nz-border-soft);
+  }
+
+  /* ---------- search field (icono integrado) ----------
+     <label class="nz-search">
+       <input type="search" placeholder="Buscar...">
+     </label>
+  */
+  .nz :where(.nz-search) {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  .nz :where(.nz-search)::before {
+    content: "";
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    background: currentColor;
+    color: var(--nz-text-muted);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E") center/contain no-repeat;
+    pointer-events: none;
+  }
+  .nz :where(.nz-search) > input {
+    width: 100%;
+    padding: 0.8rem 0.9rem 0.8rem 2.5rem;
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-md);
+    background: var(--nz-surface-raised);
+    color: var(--nz-text-strong);
+    box-shadow: inset 0 1px 0 var(--nz-inset-highlight);
+    transition: border-color var(--nz-duration-base) var(--nz-ease-standard),
+                box-shadow var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-search) > input::placeholder { color: var(--nz-text-muted); }
+  .nz :where(.nz-search) > input:focus {
+    outline: none;
+    border-color: var(--nz-color-brand);
+    box-shadow: var(--nz-ring);
+  }
+  .nz :where(.nz-search--lg) > input { padding-block: 1rem; font-size: var(--nz-text-lg); }
+  .nz :where(.nz-search--lg)::before { left: 1rem; width: 1.15rem; height: 1.15rem; }
+
+  .nz :where(.nz-search__kbd) {
+    position: absolute;
+    right: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.15rem 0.4rem;
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-sm);
+    background: var(--nz-surface-soft);
+    color: var(--nz-text-muted);
+    font-size: 0.7rem;
+    font-family: var(--nz-font-mono);
+    line-height: 1;
+  }
+
+  /* ---------- check / radio (custom, accesibles) ----------
+     <label class="nz-check">
+       <input class="nz-check__input" type="checkbox">
+       <span class="nz-check__label">Recordarme</span>
+     </label>
+  */
+  .nz :where(.nz-check, .nz-radio) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    user-select: none;
+    color: var(--nz-text-default);
+    font-size: var(--nz-text-sm);
+  }
+  .nz :where(.nz-check__input, .nz-radio__input) {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    border: 1.5px solid var(--nz-border-strong);
+    background: var(--nz-surface-raised);
+    cursor: pointer;
+    flex: 0 0 auto;
+    transition: background var(--nz-duration-fast) var(--nz-ease-standard),
+                border-color var(--nz-duration-fast) var(--nz-ease-standard);
+    display: grid;
+    place-items: center;
+  }
+  .nz :where(.nz-check__input) { border-radius: var(--nz-radius-sm); }
+  .nz :where(.nz-radio__input) { border-radius: 50%; }
+
+  .nz :where(.nz-check__input):checked,
+  .nz :where(.nz-radio__input):checked {
+    border-color: var(--nz-color-brand);
+    background: var(--nz-color-brand);
+  }
+  .nz :where(.nz-check__input):checked::after {
+    content: "";
+    width: 0.6rem;
+    height: 0.6rem;
+    background: #fff;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  .nz :where(.nz-radio__input):checked::after {
+    content: "";
+    width: 0.45rem; height: 0.45rem;
+    background: #fff; border-radius: 50%;
+  }
+  .nz :where(.nz-check--accent .nz-check__input):checked,
+  .nz :where(.nz-radio--accent .nz-radio__input):checked {
+    border-color: var(--nz-color-accent);
+    background: var(--nz-color-accent);
+  }
+
+  /* ---------- switch ----------
+     <label class="nz-switch">
+       <input class="nz-switch__input" type="checkbox">
+       <span class="nz-switch__track"><span class="nz-switch__thumb"></span></span>
+       <span>Notificaciones</span>
+     </label>
+  */
+  .nz :where(.nz-switch) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    cursor: pointer;
+    user-select: none;
+    color: var(--nz-text-default);
+    font-size: var(--nz-text-sm);
+  }
+  .nz :where(.nz-switch__input) {
+    position: absolute;
+    width: 1px; height: 1px; opacity: 0;
+    pointer-events: none;
+  }
+  .nz :where(.nz-switch__track) {
+    position: relative;
+    width: 2.5rem;
+    height: 1.4rem;
+    border-radius: var(--nz-radius-pill);
+    background: var(--nz-surface-soft);
+    border: 1px solid var(--nz-border-soft);
+    transition: background var(--nz-duration-base) var(--nz-ease-standard),
+                border-color var(--nz-duration-base) var(--nz-ease-standard);
+    flex: 0 0 auto;
+  }
+  .nz :where(.nz-switch__thumb) {
+    position: absolute;
+    top: 50%; left: 0.15rem;
+    width: 1rem; height: 1rem;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+    transform: translateY(-50%);
+    transition: left var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-switch__input):checked + .nz-switch__track {
+    background: var(--nz-gradient-brand);
+    border-color: transparent;
+  }
+  .nz :where(.nz-switch__input):checked + .nz-switch__track .nz-switch__thumb {
+    left: calc(100% - 1.15rem);
+  }
+  .nz :where(.nz-switch__input):focus-visible + .nz-switch__track {
+    box-shadow: var(--nz-ring);
+  }
+  .nz :where(.nz-switch--accent .nz-switch__input):checked + .nz-switch__track {
+    background: var(--nz-gradient-accent);
+  }
+
+  /* ---------- range ---------- */
+  .nz :where(.nz-range) {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 0.4rem;
+    background: var(--nz-surface-soft);
+    border-radius: var(--nz-radius-pill);
+    border: 1px solid var(--nz-border-soft);
+    outline: none;
+  }
+  .nz :where(.nz-range)::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 1.1rem; height: 1.1rem;
+    border-radius: 50%;
+    background: var(--nz-gradient-brand);
+    border: 2px solid #fff;
+    box-shadow: var(--nz-shadow-sm);
+    cursor: pointer;
+  }
+  .nz :where(.nz-range)::-moz-range-thumb {
+    width: 1.1rem; height: 1.1rem;
+    border-radius: 50%;
+    background: var(--nz-color-brand);
+    border: 2px solid #fff;
+    cursor: pointer;
+  }
+  .nz :where(.nz-range:focus-visible) { box-shadow: var(--nz-ring); }
+
+  /* ---------- OTP / pin code ----------
+     <div class="nz-otp">
+       <input class="nz-otp__cell" maxlength="1" inputmode="numeric">
+       ...x6
+     </div>
+  */
+  .nz :where(.nz-otp) {
+    display: inline-flex;
+    gap: 0.5rem;
+  }
+  .nz :where(.nz-otp__cell) {
+    width: 2.75rem;
+    height: 3.25rem;
+    text-align: center;
+    font-size: var(--nz-text-xl);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--nz-border-default);
+    border-radius: var(--nz-radius-md);
+    background: var(--nz-surface-raised);
+    color: var(--nz-text-strong);
+    box-shadow: inset 0 1px 0 var(--nz-inset-highlight);
+    transition: border-color var(--nz-duration-base) var(--nz-ease-standard),
+                box-shadow var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-otp__cell):focus {
+    outline: none;
+    border-color: var(--nz-color-brand);
+    box-shadow: var(--nz-ring);
+  }
+
+  /* ---------- file upload (drop zone) ----------
+     <label class="nz-file">
+       <input class="u-nz-sr-only" type="file">
+       <span class="nz-file__drop">
+         <strong>Arrastra archivos</strong> o haz clic para subir
+         <span class="nz-file__hint">PNG, JPG hasta 5 MB</span>
+       </span>
+     </label>
+  */
+  .nz :where(.nz-file) {
+    display: block;
+    cursor: pointer;
+  }
+  .nz :where(.nz-file__drop) {
+    display: grid;
+    place-items: center;
+    gap: 0.35rem;
+    padding: var(--nz-space-6);
+    border: 2px dashed var(--nz-border-strong);
+    border-radius: var(--nz-radius-lg);
+    background: var(--nz-surface-soft);
+    color: var(--nz-text-default);
+    text-align: center;
+    transition: border-color var(--nz-duration-base) var(--nz-ease-standard),
+                background var(--nz-duration-base) var(--nz-ease-standard);
+  }
+  .nz :where(.nz-file):hover .nz-file__drop,
+  .nz :where(.nz-file--dragging) .nz-file__drop {
+    border-color: var(--nz-color-brand);
+    background: var(--nz-surface-brand-soft);
+  }
+  .nz :where(.nz-file__hint) {
+    font-size: var(--nz-text-xs);
+    color: var(--nz-text-muted);
+  }
+
+  /* ---------- stepper (form wizard) ----------
+     <ol class="nz-stepper">
+       <li class="nz-stepper__step nz-stepper__step--done"><span>1</span>Cuenta</li>
+       <li class="nz-stepper__step nz-stepper__step--active"><span>2</span>Datos</li>
+       <li class="nz-stepper__step"><span>3</span>Pago</li>
+     </ol>
+  */
+  .nz :where(.nz-stepper) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--nz-space-3);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: nz-step;
+  }
+  .nz :where(.nz-stepper__step) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-pill);
+    background: var(--nz-surface-soft);
+    color: var(--nz-text-muted);
+    font-size: var(--nz-text-sm);
+    font-weight: 600;
+  }
+  .nz :where(.nz-stepper__step) > span:first-child {
+    display: inline-grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--nz-surface-base);
+    color: var(--nz-text-muted);
+    font-weight: 800;
+    font-size: var(--nz-text-xs);
+    border: 1px solid var(--nz-border-soft);
+  }
+  .nz :where(.nz-stepper__step--active) {
+    background: var(--nz-surface-brand-soft);
+    border-color: color-mix(in srgb, var(--nz-color-brand) 26%, transparent);
+    color: var(--nz-status-info-text);
+  }
+  .nz :where(.nz-stepper__step--active) > span:first-child {
+    background: var(--nz-color-brand);
+    color: #fff;
+    border-color: var(--nz-color-brand);
+  }
+  .nz :where(.nz-stepper__step--done) {
+    background: var(--nz-surface-success-soft);
+    border-color: var(--nz-status-success-border);
+    color: var(--nz-status-success-text);
+  }
+  .nz :where(.nz-stepper__step--done) > span:first-child {
+    background: var(--nz-color-success);
+    color: #fff;
+    border-color: var(--nz-color-success);
+  }
+
+  /* ---------- form layout helper ---------- */
+  .nz :where(.nz-form-grid) {
+    display: grid;
+    gap: var(--nz-space-4);
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+  .nz :where(.nz-form-grid--2) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 720px) {
+    .nz :where(.nz-form-grid--2) { grid-template-columns: 1fr; }
+  }
+  .nz :where(.nz-form-grid > .nz-field--full) { grid-column: 1 / -1; }
+}

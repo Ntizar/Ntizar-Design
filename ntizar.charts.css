@@ -1,0 +1,234 @@
+/* ============================================================
+   NTIZAR CHARTS PACK
+   Depende de: ntizar.css (+ ntizar.themes.css opcional)
+
+   Pensado para integrarse con: Chart.js, ApexCharts, ECharts,
+   D3, Recharts, Plotly, o sparklines CSS-only.
+
+   API pública:
+     .nz-chart                    -> contenedor base con altura fluida
+     .nz-chart--sm | --md | --lg  -> alturas predefinidas
+     .nz-chart--glass             -> contenedor glass para charts hero
+     .nz-chart__legend, .nz-chart__legend-item, .nz-chart__legend-dot
+     .nz-chart__tooltip           -> override visual de tooltips externos
+     .nz-sparkline                -> barras CSS-only (data-vía CSS vars)
+     .nz-sparkline__bar
+     .nz-donut                    -> donut CSS-only (conic-gradient)
+     .nz-trend-arrow--up | --down
+
+   Tokens útiles desde JS:
+     --nz-chart-1 ... --nz-chart-8  (paleta del skin activo)
+     --nz-chart-grid, --nz-chart-axis, --nz-chart-bg
+
+   Ejemplo Chart.js:
+     const css = getComputedStyle(document.documentElement);
+     const palette = [1,2,3,4,5,6,7,8].map(i => css.getPropertyValue(`--nz-chart-${i}`).trim());
+   ============================================================ */
+
+@layer ntizar.components {
+
+  .nz :where(.nz-chart) {
+    position: relative;
+    width: 100%;
+    height: clamp(14rem, 28vw, 22rem);
+    padding: var(--nz-space-4);
+    border: 1px solid var(--nz-border-soft);
+    border-radius: var(--nz-radius-lg);
+    background: var(--nz-surface-base);
+    box-shadow: var(--nz-shadow-sm);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .nz :where(.nz-chart) > canvas,
+  .nz :where(.nz-chart) > svg {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+
+  .nz :where(.nz-chart--sm) { height: 10rem; }
+  .nz :where(.nz-chart--md) { height: 18rem; }
+  .nz :where(.nz-chart--lg) { height: 26rem; }
+  .nz :where(.nz-chart--xl) { height: 34rem; }
+
+  .nz :where(.nz-chart--bare) {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .nz :where(.nz-chart--glass) {
+    background: var(--nz-surface-glass);
+    border-color: var(--nz-border-default);
+    box-shadow: var(--nz-shadow-md), var(--nz-glass-stroke);
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .nz :where(.nz-chart--glass) {
+      -webkit-backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+      backdrop-filter: var(--nz-backdrop-blur) saturate(1.2);
+    }
+  }
+
+  .nz :where(.nz-chart__head) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--nz-space-3);
+    margin-bottom: var(--nz-space-3);
+  }
+  .nz :where(.nz-chart__title) {
+    font-size: var(--nz-text-md);
+    font-weight: 700;
+    color: var(--nz-text-strong);
+  }
+  .nz :where(.nz-chart__sub) {
+    font-size: var(--nz-text-xs);
+    color: var(--nz-text-muted);
+  }
+
+  /* ---------- LEGEND ---------- */
+  .nz :where(.nz-chart__legend) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .nz :where(.nz-chart__legend-item) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--nz-text-xs);
+    color: var(--nz-text-muted);
+    font-weight: 600;
+  }
+  .nz :where(.nz-chart__legend-dot) {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: var(--nz-color-brand);
+    flex: 0 0 auto;
+  }
+
+  /* ---------- TOOLTIP override (estilo común para libs externas) ---------- */
+  .nz :where(.nz-chart__tooltip),
+  .nz :where(.chartjs-tooltip),
+  .nz :where(.apexcharts-tooltip) {
+    background: var(--nz-surface-glass-strong) !important;
+    color: var(--nz-text-strong) !important;
+    border: 1px solid var(--nz-border-default) !important;
+    border-radius: var(--nz-radius-md) !important;
+    box-shadow: var(--nz-shadow-md) !important;
+    padding: 0.6rem 0.8rem !important;
+    font-size: var(--nz-text-xs) !important;
+    font-family: var(--nz-font-sans) !important;
+  }
+
+  /* ---------- SPARKLINE CSS-only (barras) ----------
+     Uso:
+     <div class="nz-sparkline">
+       <span class="nz-sparkline__bar" style="--h: 35%;"></span>
+       <span class="nz-sparkline__bar" style="--h: 60%;"></span>
+       ...
+     </div>
+  */
+  .nz :where(.nz-sparkline) {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.18rem;
+    width: 100%;
+    height: 3rem;
+  }
+  .nz :where(.nz-sparkline__bar) {
+    flex: 1 1 0;
+    height: var(--h, 50%);
+    border-radius: 2px 2px 0 0;
+    background: var(--nz-gradient-brand);
+    opacity: 0.85;
+    transition: height var(--nz-duration-base) var(--nz-ease-standard);
+    min-height: 2px;
+  }
+  .nz :where(.nz-sparkline--accent) .nz-sparkline__bar { background: var(--nz-gradient-accent); }
+  .nz :where(.nz-sparkline--aurora) .nz-sparkline__bar { background: var(--nz-gradient-aurora); }
+  .nz :where(.nz-sparkline--lg) { height: 5rem; }
+  .nz :where(.nz-sparkline--sm) { height: 2rem; }
+
+  /* ---------- DONUT CSS-only ----------
+     Uso:
+     <div class="nz-donut" style="--p: 68;"><span>68%</span></div>
+     Para multi-segmento, usa una conic-gradient inline.
+  */
+  .nz :where(.nz-donut) {
+    --p: 0;
+    --size: 8rem;
+    --thickness: 1.1rem;
+    --c1: var(--nz-color-brand);
+    --c2: var(--nz-color-accent);
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: conic-gradient(
+      var(--c1) 0%,
+      var(--c2) calc(var(--p) * 1%),
+      var(--nz-surface-soft) 0);
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .nz :where(.nz-donut)::before {
+    content: "";
+    position: absolute;
+    inset: var(--thickness);
+    border-radius: 50%;
+    background: var(--nz-surface-base);
+  }
+  .nz :where(.nz-donut) > * {
+    position: relative;
+    font-weight: 800;
+    color: var(--nz-text-strong);
+    font-size: var(--nz-text-lg);
+    font-variant-numeric: tabular-nums;
+  }
+  .nz :where(.nz-donut--aurora) {
+    background: conic-gradient(
+      from 200deg,
+      var(--nz-color-blue-500) 0%,
+      var(--nz-color-violet-500) 35%,
+      var(--nz-color-orange-500) calc(var(--p) * 1%),
+      var(--nz-surface-soft) 0);
+  }
+
+  /* ---------- TREND ARROW ---------- */
+  .nz :where(.nz-trend-arrow) {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border: 0.4rem solid transparent;
+    vertical-align: middle;
+  }
+  .nz :where(.nz-trend-arrow--up) {
+    border-bottom-color: var(--nz-color-success);
+    border-top: 0;
+    margin-bottom: 0.15rem;
+  }
+  .nz :where(.nz-trend-arrow--down) {
+    border-top-color: var(--nz-color-danger);
+    border-bottom: 0;
+    margin-top: 0.15rem;
+  }
+
+  /* ---------- AXIS LINES (helper para SVG charts custom) ---------- */
+  .nz :where(.nz-chart svg .nz-axis line),
+  .nz :where(.nz-chart svg .nz-grid line) {
+    stroke: var(--nz-chart-grid);
+    stroke-width: 1;
+  }
+  .nz :where(.nz-chart svg text) {
+    fill: var(--nz-chart-axis);
+    font-family: var(--nz-font-sans);
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ntizar Aurora · Constellation Gallery</title>
+  <link rel="stylesheet" href="ntizar.css">
+  <link rel="stylesheet" href="ntizar.themes.css">
+  <link rel="stylesheet" href="ntizar.data.css">
+  <link rel="stylesheet" href="ntizar.charts.css">
+  <link rel="stylesheet" href="ntizar.maps.css">
+  <link rel="stylesheet" href="ntizar.viz.css">
+  <link rel="stylesheet" href="ntizar.motion.css">
+  <link rel="stylesheet" href="ntizar.forms.css">
+  <link rel="stylesheet" href="ntizar.ui.css">
+  <link rel="stylesheet" href="ntizar.patterns.css">
+
+  <!-- Leaflet (mapa) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chart.js (gráficos) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+
+    .gx-topbar {
+      position: sticky; top: 0; z-index: 30;
+      background: var(--nz-surface-glass-strong);
+      border-bottom: 1px solid var(--nz-border-soft);
+      -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    }
+    .gx-topbar__inner { min-height: 4.25rem; }
+    .gx-brand { font-weight: 800; letter-spacing: -0.03em; color: var(--nz-text-strong); text-decoration: none; }
+    .gx-nav { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .gx-nav a {
+      padding: 0.4rem 0.75rem; border-radius: var(--nz-radius-pill);
+      color: var(--nz-text-muted); text-decoration: none; font-weight: 600; font-size: var(--nz-text-sm);
+    }
+    .gx-nav a:hover { background: var(--nz-surface-soft); color: var(--nz-text-strong); }
+    .gx-section-anchor { scroll-margin-top: 5.5rem; }
+
+    .gx-hero {
+      position: relative;
+      padding: clamp(4rem, 9vw, 7rem) 0;
+      overflow: hidden;
+    }
+    .gx-hero-shape-1, .gx-hero-shape-2 {
+      position: absolute; pointer-events: none; z-index: 0;
+    }
+    .gx-hero-shape-1 { top: -6rem; right: -6rem; }
+    .gx-hero-shape-2 { bottom: -8rem; left: -6rem; }
+
+    .gx-skin-switch {
+      display: inline-flex; gap: 0.4rem; padding: 0.35rem;
+      background: var(--nz-surface-soft); border: 1px solid var(--nz-border-soft);
+      border-radius: var(--nz-radius-pill);
+    }
+    .gx-skin-switch button {
+      border: 0; background: transparent; cursor: pointer;
+      padding: 0.4rem 0.85rem; border-radius: var(--nz-radius-pill);
+      font-size: var(--nz-text-xs); font-weight: 700; color: var(--nz-text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .gx-skin-switch button[aria-pressed="true"] {
+      background: var(--nz-gradient-brand); color: #fff; box-shadow: var(--nz-shadow-brand);
+    }
+
+    .gx-kicker {
+      display: inline-flex; align-items: center; gap: .5rem;
+      color: var(--nz-text-muted); font-size: var(--nz-text-xs); font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+    }
+    .gx-kicker::before {
+      content: ""; width: 2.5rem; height: 1px;
+      background: linear-gradient(90deg, var(--nz-color-brand), var(--nz-color-accent));
+    }
+
+    .gx-pack-grid {
+      display: grid; gap: var(--nz-space-4);
+      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    }
+    .gx-pack-card { display: grid; gap: 0.5rem; }
+    .gx-pack-card code { font-size: var(--nz-text-xs); }
+
+    .gx-dashboard-shell {
+      display: grid; grid-template-columns: 16rem minmax(0, 1fr);
+      gap: var(--nz-space-4);
+      padding: var(--nz-space-4);
+      border: 1px solid var(--nz-border-default);
+      border-radius: var(--nz-radius-xl);
+      background: var(--nz-surface-glass);
+      box-shadow: var(--nz-shadow-lg), var(--nz-glass-stroke);
+      -webkit-backdrop-filter: blur(22px) saturate(1.2); backdrop-filter: blur(22px) saturate(1.2);
+    }
+    @media (max-width: 920px) { .gx-dashboard-shell { grid-template-columns: 1fr; } }
+
+    .gx-side-nav { display: grid; gap: 0.3rem; list-style: none; padding: 0; margin: 0; }
+    .gx-side-nav a {
+      display: block; padding: 0.6rem 0.85rem; border-radius: var(--nz-radius-md);
+      color: var(--nz-text-default); text-decoration: none; font-size: var(--nz-text-sm); font-weight: 600;
+    }
+    .gx-side-nav a:hover, .gx-side-nav a[aria-current="page"] {
+      background: var(--nz-surface-brand-soft); color: var(--nz-text-strong);
+    }
+
+    .gx-kpis { display: grid; gap: var(--nz-space-4); grid-template-columns: repeat(4, minmax(0,1fr)); }
+    @media (max-width: 920px) { .gx-kpis { grid-template-columns: 1fr 1fr; } }
+
+    .gx-charts { display: grid; gap: var(--nz-space-4); grid-template-columns: 1.4fr 1fr; }
+    @media (max-width: 920px) { .gx-charts { grid-template-columns: 1fr; } }
+
+    .gx-foot { padding: 5rem 0 6rem; color: var(--nz-text-muted); font-size: var(--nz-text-sm); text-align: center; }
+
+    /* Three stage relleno */
+    #gx-three { display: block; }
+  </style>
+</head>
+<body class="nz" data-nz-theme="light" data-nz-skin="aurora">
+
+  <header class="gx-topbar">
+    <div class="nz-container nz-cluster nz-cluster--between gx-topbar__inner">
+      <a class="gx-brand" href="#top">Ntizar · Constellation</a>
+
+      <nav class="gx-nav" aria-label="Secciones">
+        <a href="#packs">Packs</a>
+        <a href="#skins">Skins</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#charts">Charts</a>
+        <a href="#map">Map</a>
+        <a href="#three">3D</a>
+        <a href="#data">Data</a>
+        <a href="#motion">Motion</a>
+        <a href="#forms">Forms</a>
+        <a href="#ui">UI</a>
+        <a href="#patterns">Patterns</a>
+        <a href="#auth">Auth</a>
+      </nav>
+
+      <div class="nz-cluster">
+        <button class="nz-btn nz-btn--secondary nz-btn--sm" id="gx-theme">Tema: <span id="gx-theme-l">Light</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="gx-hero nz-aurora-bg">
+      <div class="gx-hero-shape-1 nz-orb nz-orb--aurora nz-orb--sm nz-anim-float" aria-hidden="true"></div>
+      <div class="gx-hero-shape-2 nz-orb nz-orb--accent nz-anim-float" aria-hidden="true" style="--nz-orb-size: 18rem;"></div>
+
+      <div class="nz-container nz-stack nz-stack--lg" style="position: relative; z-index: 1;">
+        <div class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">Aurora v4.1 · Constellation</span>
+          <h1 class="nz-anim-rise">Una base visual <span class="u-nz-text-gradient nz-anim-aurora-pan u-nz-text-mono">infinita</span> con identidad Ntizar.</h1>
+          <p class="nz-anim-rise nz-anim--delay-2" style="max-width: 48rem; font-size: var(--nz-text-lg);">
+            Core + 6 packs opcionales para construir cualquier tipo de proyecto web —dashboards, mapas, escenas 3D, landings, generative art— manteniendo el ADN azul + naranja.
+          </p>
+        </div>
+
+        <div class="nz-cluster nz-anim-rise nz-anim--delay-3">
+          <a class="nz-btn nz-btn--primary nz-btn--lg" href="#packs">Explorar packs</a>
+          <a class="nz-btn nz-btn--glass-brand nz-btn--lg" href="INDEX.md">Abrir índice</a>
+          <a class="nz-btn nz-btn--ghost nz-btn--lg" href="demo.html">Demo del core</a>
+        </div>
+
+        <div class="nz-cluster nz-anim-rise nz-anim--delay-4">
+          <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot">CSS only</span>
+          <span class="nz-badge nz-badge--glass nz-badge--no-dot">Sin build</span>
+          <span class="nz-badge nz-badge--glass-accent nz-badge--no-dot">5 skins</span>
+          <span class="nz-badge nz-badge--neutral nz-badge--no-dot">Light + Dark</span>
+          <span class="nz-badge nz-badge--neutral nz-badge--no-dot">A11y · Reduced motion</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PACKS ============ -->
+    <section class="nz-section gx-section-anchor" id="packs">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <div class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">Constellation</span>
+          <h2>Packs modulares — carga sólo lo que uses</h2>
+          <p style="max-width: 48rem; color: var(--nz-text-muted)">
+            Cada pack es independiente y vive bajo el mismo namespace <code>.nz</code>. Sin colisiones, sin orden estricto, sin JavaScript obligatorio.
+          </p>
+        </div>
+
+        <div class="gx-pack-grid">
+          <article class="nz-card nz-card--interactive gx-pack-card nz-reveal">
+            <div class="nz-card__title">core</div>
+            <code>ntizar.css</code>
+            <p>Tokens, layout, componentes base, tipografía, glass, light/dark, focus accesible.</p>
+          </article>
+          <article class="nz-card nz-card--interactive gx-pack-card nz-reveal">
+            <div class="nz-card__title">themes</div>
+            <code>ntizar.themes.css</code>
+            <p>5 skins (aurora, sunset, midnight, ocean, citrus) + paleta de charts coherente.</p>
+          </article>
+          <article class="nz-card nz-card--interactive gx-pack-card nz-reveal">
+            <div class="nz-card__title">data</div>
+            <code>ntizar.data.css</code>
+            <p>KPIs, stat tiles, progress, meter, skeletons, avatars, timeline, tags.</p>
+          </article>
+          <article class="nz-card nz-card--interactive gx-pack-card nz-reveal">
+            <div class="nz-card__title">charts</div>
+            <code>ntizar.charts.css</code>
+            <p>Contenedores para Chart.js / Apex / D3, sparklines y donuts CSS-only, paletas.</p>
+          </article>
+          <article class="nz-card nz-card--interactive gx-pack-card nz-reveal">
+            <div class="nz-card__title">maps</div>
+            <code>ntizar.maps.css</code>
+            <p>Frame para Leaflet/Mapbox/MapLibre, overlays HUD, pins, popups, leyenda.</p>
+          </article>
+          <article class="nz-card nz-card--interactive gx-pack-card nz-reveal">
+            <div class="nz-card__title">viz</div>
+            <code>ntizar.viz.css</code>
+            <p>Stages para three.js/canvas, fondos aurora animados, orbs, glow rings, scanlines.</p>
+          </article>
+          <article class="nz-card nz-card--interactive gx-pack-card nz-reveal">
+            <div class="nz-card__title">motion</div>
+            <code>ntizar.motion.css</code>
+            <p>Reveal, rise, scale, glow-pulse, aurora-pan, shimmer, marquee, typing, hover-lift.</p>
+          </article>
+        </div>
+
+        <div class="nz-callout nz-callout--tip">
+          <span class="nz-callout__title">Para agentes</span>
+          <div class="nz-callout__body">El archivo <code>INDEX.md</code> contiene un mapa "necesito X → archivo Y, clases Z". Es el primer sitio donde mirar.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SKINS ============ -->
+    <section class="nz-section gx-section-anchor" id="skins">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <div class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">Skins</span>
+          <h2>Misma identidad, 5 personalidades</h2>
+          <p style="max-width: 48rem; color: var(--nz-text-muted)">
+            Cambia <code>data-nz-skin</code> en el root para reescribir tokens de marca, gradientes, sombras y paleta de charts. Pulsa los botones — toda la página se actualiza en vivo.
+          </p>
+        </div>
+
+        <div class="gx-skin-switch" role="group" aria-label="Skin">
+          <button data-skin="aurora"   aria-pressed="true">Aurora</button>
+          <button data-skin="sunset"   aria-pressed="false">Sunset</button>
+          <button data-skin="midnight" aria-pressed="false">Midnight</button>
+          <button data-skin="ocean"    aria-pressed="false">Ocean</button>
+          <button data-skin="citrus"   aria-pressed="false">Citrus</button>
+        </div>
+
+        <div class="nz-grid nz-grid--3">
+          <div class="nz-surface nz-stack">
+            <span class="nz-badge nz-badge--primary nz-badge--no-dot">brand</span>
+            <div class="u-nz-bg-brand u-nz-rounded-md" style="height: 4rem;"></div>
+            <code class="u-nz-text-mono">--nz-color-brand</code>
+          </div>
+          <div class="nz-surface nz-stack">
+            <span class="nz-badge nz-badge--accent nz-badge--no-dot">accent</span>
+            <div class="u-nz-bg-accent u-nz-rounded-md" style="height: 4rem;"></div>
+            <code class="u-nz-text-mono">--nz-color-accent</code>
+          </div>
+          <div class="nz-surface nz-stack">
+            <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot">aurora</span>
+            <div class="u-nz-bg-aurora u-nz-rounded-md nz-anim-aurora-pan" style="height: 4rem;"></div>
+            <code class="u-nz-text-mono">--nz-gradient-aurora</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DASHBOARD (data + charts) ============ -->
+    <section class="nz-section gx-section-anchor" id="dashboard">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <div class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">Dashboard real</span>
+          <h2>Un panel completo con <code>data</code> + <code>charts</code></h2>
+        </div>
+
+        <div class="gx-dashboard-shell">
+          <aside class="nz-stack">
+            <div class="nz-cluster">
+              <span class="nz-avatar nz-avatar--aurora">N</span>
+              <div>
+                <div style="font-weight: 800; color: var(--nz-text-strong);">Ntizar HQ</div>
+                <div style="font-size: var(--nz-text-xs); color: var(--nz-text-muted);">Constellation v4.1</div>
+              </div>
+            </div>
+            <ul class="gx-side-nav">
+              <li><a href="#dashboard" aria-current="page">Overview</a></li>
+              <li><a href="#charts">Analytics</a></li>
+              <li><a href="#map">Operations</a></li>
+              <li><a href="#three">Lab 3D</a></li>
+              <li><a href="#motion">Motion</a></li>
+            </ul>
+            <div class="nz-callout nz-callout--tip">
+              <span class="nz-callout__title">Tip</span>
+              <div class="nz-callout__body">Sidebar montado solo con avatar + cluster + nav. Sin componente nuevo.</div>
+            </div>
+          </aside>
+
+          <div class="nz-stack nz-stack--lg">
+            <div class="nz-cluster nz-cluster--between">
+              <h3 style="margin: 0;">Overview · últimos 30 días</h3>
+              <div class="nz-cluster">
+                <span class="nz-tag nz-tag--brand">Live</span>
+                <button class="nz-btn nz-btn--ghost nz-btn--sm">Exportar</button>
+                <button class="nz-btn nz-btn--primary nz-btn--sm">Nuevo informe</button>
+              </div>
+            </div>
+
+            <!-- KPIs -->
+            <div id="gx-kpis" class="gx-kpis"></div>
+
+            <!-- charts -->
+            <div class="gx-charts" id="charts">
+              <div class="nz-chart nz-chart--lg">
+                <div class="nz-chart__head">
+                  <div>
+                    <div class="nz-chart__title">Sesiones vs conversión</div>
+                    <div class="nz-chart__sub">Comparativa diaria</div>
+                  </div>
+                  <ul class="nz-chart__legend">
+                    <li class="nz-chart__legend-item"><span class="nz-chart__legend-dot" style="background: var(--nz-chart-1)"></span>Sesiones</li>
+                    <li class="nz-chart__legend-item"><span class="nz-chart__legend-dot" style="background: var(--nz-chart-2)"></span>Conversión</li>
+                  </ul>
+                </div>
+                <canvas id="gx-line"></canvas>
+              </div>
+
+              <div class="nz-chart nz-chart--lg nz-chart--glass">
+                <div class="nz-chart__head">
+                  <div>
+                    <div class="nz-chart__title">Distribución por canal</div>
+                    <div class="nz-chart__sub">Donut con paleta del skin</div>
+                  </div>
+                </div>
+                <canvas id="gx-donut"></canvas>
+              </div>
+            </div>
+
+            <!-- progress + sparkline -->
+            <div class="nz-grid nz-grid--2">
+              <div class="nz-data-card">
+                <div class="nz-data-card__head">
+                  <div class="nz-data-card__title">Roadmap Q2</div>
+                  <span class="nz-tag nz-tag--accent">68%</span>
+                </div>
+                <div class="nz-progress nz-progress--aurora nz-progress--lg">
+                  <div class="nz-progress__bar" style="width: 68%"></div>
+                </div>
+                <div class="nz-stack nz-stack--sm">
+                  <div class="nz-cluster nz-cluster--between"><span>Auth + onboarding</span><span class="u-nz-num">100%</span></div>
+                  <div class="nz-progress"><div class="nz-progress__bar" style="width:100%"></div></div>
+                  <div class="nz-cluster nz-cluster--between"><span>Billing</span><span class="u-nz-num">72%</span></div>
+                  <div class="nz-progress nz-progress--accent"><div class="nz-progress__bar" style="width:72%"></div></div>
+                  <div class="nz-cluster nz-cluster--between"><span>Insights</span><span class="u-nz-num">35%</span></div>
+                  <div class="nz-progress"><div class="nz-progress__bar" style="width:35%"></div></div>
+                </div>
+              </div>
+
+              <div class="nz-data-card">
+                <div class="nz-data-card__head">
+                  <div class="nz-data-card__title">Pulse semanal</div>
+                  <span class="nz-tag nz-tag--brand">Sparkline CSS</span>
+                </div>
+                <div class="nz-cluster">
+                  <div class="nz-meter nz-meter--aurora" style="--nz-meter-value: 82;"><span>82%</span></div>
+                  <div class="nz-stack nz-stack--sm" style="flex:1;">
+                    <div class="nz-sparkline">
+                      <span class="nz-sparkline__bar" style="--h: 30%"></span>
+                      <span class="nz-sparkline__bar" style="--h: 55%"></span>
+                      <span class="nz-sparkline__bar" style="--h: 42%"></span>
+                      <span class="nz-sparkline__bar" style="--h: 78%"></span>
+                      <span class="nz-sparkline__bar" style="--h: 60%"></span>
+                      <span class="nz-sparkline__bar" style="--h: 88%"></span>
+                      <span class="nz-sparkline__bar" style="--h: 95%"></span>
+                    </div>
+                    <div class="nz-cluster">
+                      <span class="nz-trend-arrow nz-trend-arrow--up"></span>
+                      <span class="u-nz-text-strong u-nz-num">+18.4%</span>
+                      <span class="u-nz-text-muted">vs semana anterior</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="nz-stack nz-stack--sm">
+                  <div class="nz-skeleton nz-skeleton--title"></div>
+                  <div class="nz-skeleton nz-skeleton--text"></div>
+                  <div class="nz-skeleton nz-skeleton--text" style="max-width: 60%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Avatares + timeline -->
+            <div class="nz-grid nz-grid--2">
+              <div class="nz-card nz-card--soft">
+                <div class="nz-card__title">Equipo activo</div>
+                <div class="nz-avatar-stack">
+                  <span class="nz-avatar">A</span>
+                  <span class="nz-avatar nz-avatar--accent">B</span>
+                  <span class="nz-avatar nz-avatar--aurora">C</span>
+                  <span class="nz-avatar">D</span>
+                  <span class="nz-avatar nz-avatar--accent">+5</span>
+                </div>
+                <div class="nz-cluster">
+                  <span class="nz-tag">Diseño</span>
+                  <span class="nz-tag nz-tag--brand">Producto</span>
+                  <span class="nz-tag nz-tag--accent">Datos</span>
+                </div>
+              </div>
+
+              <div class="nz-card nz-card--soft">
+                <div class="nz-card__title">Timeline</div>
+                <ol class="nz-timeline">
+                  <li class="nz-timeline__item">
+                    <div class="nz-timeline__meta">Hoy · 09:24</div>
+                    <div class="nz-timeline__title">Aurora v4.1 publicado</div>
+                  </li>
+                  <li class="nz-timeline__item nz-timeline__item--accent">
+                    <div class="nz-timeline__meta">Ayer · 17:02</div>
+                    <div class="nz-timeline__title">Pack <code>charts</code> añadido</div>
+                  </li>
+                  <li class="nz-timeline__item">
+                    <div class="nz-timeline__meta">Lun · 11:11</div>
+                    <div class="nz-timeline__title">Skins · primer sprint</div>
+                  </li>
+                </ol>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MAP ============ -->
+    <section class="nz-section gx-section-anchor" id="map">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <div class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">Maps pack</span>
+          <h2>Leaflet con look Ntizar — overlays glass, pins y leyenda</h2>
+        </div>
+        <div id="gx-map" class="nz-map nz-map--lg nz-map--glass">
+          <div class="nz-map__overlay nz-map__overlay--top-left">
+            <strong>Estaciones · Madrid</strong>
+            <div style="color: var(--nz-text-muted); margin-top: .25rem;">12 nodos activos</div>
+          </div>
+          <div class="nz-map__legend">
+            <strong>Leyenda</strong>
+            <ul>
+              <li>Estación principal</li>
+              <li style="--pulse: var(--nz-color-accent);">Estación activa</li>
+            </ul>
+          </div>
+          <div class="nz-map__attribution">© OpenStreetMap · CARTO</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ THREE.JS ============ -->
+    <section class="nz-section gx-section-anchor" id="three">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <div class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">Viz pack · WebGL</span>
+          <h2>Stage para three.js con frame glass</h2>
+        </div>
+        <div class="nz-stage nz-stage--hero nz-stage--glass-frame">
+          <canvas id="gx-three" class="nz-stage__canvas"></canvas>
+          <div class="nz-stage__hud">
+            <div class="nz-cluster">
+              <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot">Live</span>
+              <span class="nz-badge nz-badge--glass-accent nz-badge--no-dot">WebGL</span>
+            </div>
+            <h2 style="color: #fff; margin-top: .75rem;">Aurora particle field</h2>
+            <p class="nz-stage__caption" style="color: rgba(255,255,255,.85);">800 partículas, paleta sincronizada con el skin activo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DATA UTILITIES SHOWCASE ============ -->
+    <section class="nz-section gx-section-anchor" id="data">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <div class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">Data pack</span>
+          <h2>Estados de carga, meters y avatares</h2>
+        </div>
+        <div class="nz-grid nz-grid--3">
+          <div class="nz-card">
+            <div class="nz-card__title">Skeleton state</div>
+            <div class="nz-stack nz-stack--sm">
+              <div class="nz-cluster"><div class="nz-skeleton nz-skeleton--circle"></div><div style="flex:1"><div class="nz-skeleton nz-skeleton--title"></div><div class="nz-skeleton nz-skeleton--text"></div></div></div>
+              <div class="nz-skeleton nz-skeleton--block"></div>
+            </div>
+          </div>
+          <div class="nz-card">
+            <div class="nz-card__title">Meters</div>
+            <div class="nz-cluster">
+              <div class="nz-meter" style="--nz-meter-value: 35;"><span>35%</span></div>
+              <div class="nz-meter nz-meter--accent" style="--nz-meter-value: 62;"><span>62%</span></div>
+              <div class="nz-meter nz-meter--aurora" style="--nz-meter-value: 88;"><span>88%</span></div>
+            </div>
+          </div>
+          <div class="nz-card">
+            <div class="nz-card__title">Donuts CSS</div>
+            <div class="nz-cluster">
+              <div class="nz-donut" style="--p: 45;"><span>45%</span></div>
+              <div class="nz-donut nz-donut--aurora" style="--p: 72;"><span>72%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MOTION ============ -->
+    <section class="nz-section gx-section-anchor" id="motion">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <div class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">Motion pack</span>
+          <h2>Animaciones reutilizables (con respeto a reduced-motion)</h2>
+        </div>
+
+        <div class="nz-grid nz-grid--3">
+          <div class="nz-card nz-anim-glow-pulse"><div class="nz-card__title">glow-pulse</div><p>Halo expansivo permanente.</p></div>
+          <div class="nz-card nz-anim-float"><div class="nz-card__title">float</div><p>Levitación sutil 5s.</p></div>
+          <div class="nz-card nz-anim-shimmer"><div class="nz-card__title">shimmer</div><p>Brillo cíclico sobre superficie.</p></div>
+        </div>
+
+        <div class="nz-marquee">
+          <div class="nz-marquee__track">
+            <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot">core</span>
+            <span class="nz-badge nz-badge--glass nz-badge--no-dot">themes</span>
+            <span class="nz-badge nz-badge--glass-accent nz-badge--no-dot">data</span>
+            <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot">charts</span>
+            <span class="nz-badge nz-badge--glass nz-badge--no-dot">maps</span>
+            <span class="nz-badge nz-badge--glass-accent nz-badge--no-dot">viz</span>
+            <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot">motion</span>
+            <!-- duplicado para loop -->
+            <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot">core</span>
+            <span class="nz-badge nz-badge--glass nz-badge--no-dot">themes</span>
+            <span class="nz-badge nz-badge--glass-accent nz-badge--no-dot">data</span>
+            <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot">charts</span>
+            <span class="nz-badge nz-badge--glass nz-badge--no-dot">maps</span>
+            <span class="nz-badge nz-badge--glass-accent nz-badge--no-dot">viz</span>
+            <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot">motion</span>
+          </div>
+        </div>
+
+        <div class="nz-callout nz-callout--tip">
+          <span class="nz-callout__title">Typing</span>
+          <div class="nz-callout__body">Aurora <span class="nz-anim-typing">arranca apps en segundos</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FORMS ============ -->
+    <section class="nz-section gx-section-anchor" id="forms">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <header class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">ntizar.forms.css</span>
+          <h2>Formularios ricos, accesibles, listos para producción.</h2>
+        </header>
+
+        <div class="nz-grid nz-grid--2" style="align-items:start">
+          <form class="nz-card nz-form-grid nz-form-grid--2" onsubmit="event.preventDefault()">
+            <h3 class="nz-text-h4 nz-field--full">Cuenta nueva</h3>
+
+            <label class="nz-field">
+              <span class="nz-field__label">Nombre</span>
+              <input class="nz-input" placeholder="Ada Lovelace">
+            </label>
+
+            <label class="nz-field">
+              <span class="nz-field__label">Email</span>
+              <div class="nz-input-group">
+                <span class="nz-input-group__addon">@</span>
+                <input class="nz-input" placeholder="ada@ntizar.dev">
+              </div>
+            </label>
+
+            <label class="nz-field nz-field--full">
+              <span class="nz-field__label">Buscar</span>
+              <input class="nz-input nz-search" placeholder="Buscar componentes…">
+            </label>
+
+            <div class="nz-field nz-field--full">
+              <span class="nz-field__label">Plan</span>
+              <div class="nz-segmented">
+                <label class="nz-segmented__option"><input type="radio" name="plan" checked><span>Mensual</span></label>
+                <label class="nz-segmented__option"><input type="radio" name="plan"><span>Anual</span></label>
+                <label class="nz-segmented__option"><input type="radio" name="plan"><span>Lifetime</span></label>
+              </div>
+            </div>
+
+            <label class="nz-switch">
+              <input class="nz-switch__input" type="checkbox" checked>
+              <span class="nz-switch__track"><span class="nz-switch__thumb"></span></span>
+              <span>Recibir novedades</span>
+            </label>
+
+            <label class="nz-check">
+              <input type="checkbox" checked>
+              <span>Acepto términos</span>
+            </label>
+
+            <div class="nz-field nz-field--full">
+              <span class="nz-field__label">Volumen</span>
+              <input class="nz-range" type="range" value="65">
+            </div>
+
+            <div class="nz-field nz-field--full">
+              <span class="nz-field__label">Código de verificación</span>
+              <div class="nz-otp">
+                <input class="nz-otp__cell" maxlength="1" value="4">
+                <input class="nz-otp__cell" maxlength="1" value="2">
+                <input class="nz-otp__cell" maxlength="1">
+                <input class="nz-otp__cell" maxlength="1">
+                <input class="nz-otp__cell" maxlength="1">
+                <input class="nz-otp__cell" maxlength="1">
+              </div>
+            </div>
+
+            <label class="nz-file nz-field--full">
+              <input type="file" hidden>
+              <span class="nz-file__drop">Arrastra un archivo o haz click</span>
+              <span class="nz-file__hint">PDF, PNG o JPG · máx 5MB</span>
+            </label>
+
+            <div class="nz-cluster nz-field--full" style="justify-content:flex-end">
+              <button type="reset" class="nz-btn nz-btn--ghost">Limpiar</button>
+              <button class="nz-btn nz-btn--primary">Crear cuenta</button>
+            </div>
+          </form>
+
+          <div class="nz-stack nz-stack--lg">
+            <div class="nz-card">
+              <h3 class="nz-text-h4">Stepper</h3>
+              <p class="nz-text-muted nz-text-sm">Wizard accesible para flujos por pasos.</p>
+              <ol class="nz-stepper" style="margin-top:1rem">
+                <li class="nz-stepper__step nz-stepper__step--done">Datos</li>
+                <li class="nz-stepper__step nz-stepper__step--active">Plan</li>
+                <li class="nz-stepper__step">Pago</li>
+                <li class="nz-stepper__step">Confirmación</li>
+              </ol>
+            </div>
+
+            <div class="nz-card">
+              <h3 class="nz-text-h4">Radio + check personalizados</h3>
+              <div class="nz-stack nz-stack--sm" style="margin-top:0.75rem">
+                <label class="nz-radio nz-radio--accent"><input type="radio" name="size" checked><span>S — 14px</span></label>
+                <label class="nz-radio nz-radio--accent"><input type="radio" name="size"><span>M — 16px</span></label>
+                <label class="nz-radio nz-radio--accent"><input type="radio" name="size"><span>L — 18px</span></label>
+                <div class="nz-divider--label">opciones</div>
+                <label class="nz-check nz-check--accent"><input type="checkbox" checked><span>Activar modo nocturno</span></label>
+                <label class="nz-check nz-check--accent"><input type="checkbox"><span>Sincronizar con sistema</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ UI COMPONENTS ============ -->
+    <section class="nz-section gx-section-anchor" id="ui">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <header class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">ntizar.ui.css</span>
+          <h2>Componentes interactivos: modal, drawer, dropdown, toast, tabs…</h2>
+        </header>
+
+        <div class="nz-grid nz-grid--2">
+
+          <div class="nz-card nz-stack nz-stack--md">
+            <h3 class="nz-text-h4">Tabs</h3>
+            <div class="nz-tabs">
+              <div class="nz-tabs__list" role="tablist">
+                <button class="nz-tab nz-tab--active" data-gx-tab="0">Resumen</button>
+                <button class="nz-tab" data-gx-tab="1">Métricas</button>
+                <button class="nz-tab" data-gx-tab="2">Equipo</button>
+              </div>
+              <div class="nz-tabs__panel" data-gx-panel="0">El sistema rinde un 24% mejor este mes. Buen trabajo.</div>
+              <div class="nz-tabs__panel" hidden data-gx-panel="1">Latencia p95: 142ms · Disponibilidad: 99.98% · Errores 5xx: 0.02%</div>
+              <div class="nz-tabs__panel" hidden data-gx-panel="2">12 personas, 4 equipos, 1 misión.</div>
+            </div>
+
+            <h3 class="nz-text-h4" style="margin-top:1rem">Accordion</h3>
+            <div class="nz-accordion">
+              <details class="nz-accordion__item" open>
+                <summary>¿Qué es Constellation?</summary>
+                <div class="nz-accordion__body">El sistema modular de Ntizar para construir cualquier proyecto.</div>
+              </details>
+              <details class="nz-accordion__item">
+                <summary>¿Necesito React?</summary>
+                <div class="nz-accordion__body">No. Es CSS puro. Funciona con cualquier stack.</div>
+              </details>
+              <details class="nz-accordion__item">
+                <summary>¿Hay dark mode?</summary>
+                <div class="nz-accordion__body">Sí, vía <code>data-nz-theme="dark"</code>.</div>
+              </details>
+            </div>
+          </div>
+
+          <div class="nz-card nz-stack nz-stack--md">
+            <h3 class="nz-text-h4">Overlays</h3>
+            <div class="nz-cluster">
+              <button class="nz-btn nz-btn--primary" id="gx-modal-open">Abrir modal</button>
+              <button class="nz-btn nz-btn--secondary" id="gx-drawer-open">Abrir drawer</button>
+              <button class="nz-btn nz-btn--accent" id="gx-toast-fire">Lanzar toast</button>
+            </div>
+
+            <h3 class="nz-text-h4" style="margin-top:1rem">Dropdown</h3>
+            <div class="nz-dropdown" id="gx-dd">
+              <button class="nz-btn nz-btn--secondary" id="gx-dd-btn">Acciones ▾</button>
+              <div class="nz-dropdown__menu">
+                <button class="nz-dropdown__item">✏️ Editar</button>
+                <button class="nz-dropdown__item">📋 Duplicar</button>
+                <button class="nz-dropdown__item">📤 Exportar</button>
+                <div class="nz-dropdown__sep"></div>
+                <button class="nz-dropdown__item nz-dropdown__item--danger">🗑 Eliminar</button>
+              </div>
+            </div>
+
+            <h3 class="nz-text-h4" style="margin-top:1rem">Tooltip · Spinner · Chips</h3>
+            <div class="nz-cluster">
+              <span class="nz-tooltip" data-tip="Tooltip CSS-only" tabindex="0">
+                <span class="nz-badge nz-badge--brand">hover me</span>
+              </span>
+              <span class="nz-spinner"></span>
+              <span class="nz-spinner nz-spinner--lg nz-spinner--accent"></span>
+              <span class="nz-chip">React <button class="nz-chip__remove" aria-label="quitar">×</button></span>
+              <span class="nz-chip nz-chip--accent">Vue <button class="nz-chip__remove" aria-label="quitar">×</button></span>
+              <span class="nz-chip nz-chip--neutral">Svelte <button class="nz-chip__remove" aria-label="quitar">×</button></span>
+            </div>
+
+            <h3 class="nz-text-h4" style="margin-top:1rem">Breadcrumbs · Pagination</h3>
+            <ol class="nz-breadcrumbs">
+              <li class="nz-breadcrumbs__item"><a href="#">Inicio</a></li>
+              <li class="nz-breadcrumbs__sep">/</li>
+              <li class="nz-breadcrumbs__item"><a href="#">Proyectos</a></li>
+              <li class="nz-breadcrumbs__sep">/</li>
+              <li class="nz-breadcrumbs__item" aria-current="page">Constellation</li>
+            </ol>
+            <nav class="nz-pagination">
+              <a class="nz-pagination__item nz-pagination__item--disabled">‹</a>
+              <a class="nz-pagination__item">1</a>
+              <a class="nz-pagination__item nz-pagination__item--active">2</a>
+              <a class="nz-pagination__item">3</a>
+              <a class="nz-pagination__item">4</a>
+              <a class="nz-pagination__item">›</a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="nz-card">
+          <h3 class="nz-text-h4">Command bar (cmd-K)</h3>
+          <p class="nz-text-muted nz-text-sm">Una paleta de acciones inspirada en Linear / Raycast / VS Code.</p>
+          <div class="nz-command-bar" style="margin-top:1rem">
+            <div class="nz-command-bar__field">
+              <span aria-hidden="true">⌕</span>
+              <input placeholder="Escribe un comando o busca…">
+              <span class="nz-badge nz-badge--neutral nz-badge--no-dot">⌘K</span>
+            </div>
+            <div class="nz-command-bar__group">
+              <div class="nz-command-bar__heading">Acciones</div>
+              <div class="nz-command-bar__item is-active">⚡ Crear proyecto nuevo</div>
+              <div class="nz-command-bar__item">📊 Abrir dashboard</div>
+              <div class="nz-command-bar__item">🎨 Cambiar skin</div>
+              <div class="nz-command-bar__heading">Recientes</div>
+              <div class="nz-command-bar__item">📁 Aurora landing</div>
+              <div class="nz-command-bar__item">🌍 Mapa Madrid · IoT</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PATTERNS ============ -->
+    <section class="nz-section gx-section-anchor" id="patterns">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <header class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">ntizar.patterns.css</span>
+          <h2>Patrones de página listos para componer.</h2>
+        </header>
+
+        <!-- features -->
+        <div class="nz-feature-grid">
+          <article class="nz-feature">
+            <div class="nz-feature__icon">⚡</div>
+            <h3 class="nz-feature__title">Sin build</h3>
+            <p class="nz-feature__body">Un <code>&lt;link&gt;</code> y a producir. CSS puro.</p>
+          </article>
+          <article class="nz-feature nz-feature--accent">
+            <div class="nz-feature__icon">🎨</div>
+            <h3 class="nz-feature__title">5 skins</h3>
+            <p class="nz-feature__body">Misma identidad. Cinco personalidades.</p>
+          </article>
+          <article class="nz-feature">
+            <div class="nz-feature__icon">📊</div>
+            <h3 class="nz-feature__title">Charts ready</h3>
+            <p class="nz-feature__body">Chart.js / Apex / D3 con paleta sincronizada.</p>
+          </article>
+          <article class="nz-feature">
+            <div class="nz-feature__icon">🌍</div>
+            <h3 class="nz-feature__title">Maps & 3D</h3>
+            <p class="nz-feature__body">Leaflet, Mapbox, three.js, MapLibre.</p>
+          </article>
+        </div>
+
+        <!-- pricing -->
+        <div class="nz-pricing-grid">
+          <article class="nz-pricing-card">
+            <h3 class="nz-pricing-card__name">Starter</h3>
+            <div class="nz-pricing-card__price"><span class="nz-pricing-card__amount">€0</span><span class="nz-pricing-card__period">/mes</span></div>
+            <ul class="nz-pricing-card__list">
+              <li>Hasta 3 proyectos</li>
+              <li>Comunidad</li>
+              <li>Skins básicos</li>
+            </ul>
+            <button class="nz-btn nz-btn--secondary nz-btn--block">Empezar</button>
+          </article>
+          <article class="nz-pricing-card nz-pricing-card--featured">
+            <span class="nz-pricing-card__badge">Popular</span>
+            <h3 class="nz-pricing-card__name">Pro</h3>
+            <div class="nz-pricing-card__price"><span class="nz-pricing-card__amount">€19</span><span class="nz-pricing-card__period">/mes</span></div>
+            <ul class="nz-pricing-card__list">
+              <li>Proyectos ilimitados</li>
+              <li>Todos los skins</li>
+              <li>Soporte prioritario</li>
+              <li>Componentes premium</li>
+            </ul>
+            <button class="nz-btn nz-btn--accent nz-btn--block">Probar Pro</button>
+          </article>
+          <article class="nz-pricing-card">
+            <h3 class="nz-pricing-card__name">Team</h3>
+            <div class="nz-pricing-card__price"><span class="nz-pricing-card__amount">€49</span><span class="nz-pricing-card__period">/mes</span></div>
+            <ul class="nz-pricing-card__list">
+              <li>Roles y permisos</li>
+              <li>SSO / SAML</li>
+              <li>Auditoría</li>
+              <li>SLA 99.9%</li>
+            </ul>
+            <button class="nz-btn nz-btn--secondary nz-btn--block">Hablemos</button>
+          </article>
+        </div>
+
+        <!-- stats banner + cta -->
+        <div class="nz-stats-banner">
+          <div><strong>9</strong><span>packs CSS</span></div>
+          <div><strong>5</strong><span>skins</span></div>
+          <div><strong>0</strong><span>dependencias</span></div>
+          <div><strong>∞</strong><span>combinaciones</span></div>
+        </div>
+
+        <div class="nz-cta-banner">
+          <div>
+            <h3 class="nz-cta-banner__title">¿Listo para construir con identidad?</h3>
+            <p class="nz-cta-banner__sub">Carga el core, elige un skin y empieza. Esto es solo el principio.</p>
+          </div>
+          <div class="nz-cluster">
+            <a class="nz-btn nz-btn--glass" href="USAGE.md">Leer USAGE</a>
+            <a class="nz-btn" style="background:#fff;color:var(--nz-color-slate-900)" href="SYSTEM.md">Ver SYSTEM</a>
+          </div>
+        </div>
+
+        <!-- faq -->
+        <div class="nz-faq">
+          <details class="nz-accordion__item" open>
+            <summary>¿Qué incluye Constellation?</summary>
+            <div class="nz-accordion__body">Core (tokens, base, objects, components, utilities) + 8 packs opcionales: themes, data, charts, maps, viz, motion, forms, ui, patterns.</div>
+          </details>
+          <details class="nz-accordion__item">
+            <summary>¿Funciona con Tailwind / Bootstrap?</summary>
+            <div class="nz-accordion__body">Sí. Todo está aislado bajo <code>.nz</code>. Convive sin colisionar.</div>
+          </details>
+          <details class="nz-accordion__item">
+            <summary>¿Cómo cambio la marca?</summary>
+            <div class="nz-accordion__body">Sobreescribe los tokens <code>--nz-color-brand</code>, <code>--nz-color-accent</code> y los <code>--nz-gradient-*</code> en tu propio CSS posterior.</div>
+          </details>
+          <details class="nz-accordion__item">
+            <summary>¿Hay roadmap?</summary>
+            <div class="nz-accordion__body">Sí, en <code>SYSTEM.md</code>. Próximos packs: <em>editor</em>, <em>print</em>, <em>email</em>.</div>
+          </details>
+        </div>
+
+        <!-- empty state -->
+        <div class="nz-grid nz-grid--2">
+          <div class="nz-card nz-empty-state">
+            <div class="nz-empty-state__icon">📭</div>
+            <div class="nz-empty-state__title">No hay proyectos todavía</div>
+            <p>Crea tu primer proyecto para empezar a iterar.</p>
+            <button class="nz-btn nz-btn--primary">Nuevo proyecto</button>
+          </div>
+          <div class="nz-card">
+            <div class="nz-error-page">
+              <div>
+                <div class="nz-error-page__code">404</div>
+                <h3 class="nz-error-page__title">Página perdida en la constelación</h3>
+                <p class="nz-error-page__sub">Pero la identidad sigue intacta.</p>
+                <a class="nz-btn nz-btn--primary" href="#top">Volver al inicio</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- logo cloud -->
+        <div class="nz-logo-cloud">
+          <span>ACME</span><span>Lumina</span><span>Northstar</span><span>Quanta</span><span>Helix</span><span>Vela</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ AUTH SHELL DEMO ============ -->
+    <section class="nz-section gx-section-anchor" id="auth">
+      <div class="nz-container nz-stack nz-stack--lg">
+        <header class="nz-stack nz-stack--sm">
+          <span class="gx-kicker">pattern · auth-shell</span>
+          <h2>Auth shell con split + arte aurora.</h2>
+        </header>
+        <div class="nz-card" style="padding:0;overflow:hidden;border-radius:var(--nz-radius-xl)">
+          <div class="nz-auth-shell" style="min-height:auto">
+            <div class="nz-auth-shell__panel" style="padding:2.5rem">
+              <form class="nz-stack nz-stack--md" onsubmit="event.preventDefault()">
+                <div class="nz-stack nz-stack--sm">
+                  <h3 class="nz-text-h3" style="margin:0">Bienvenido de nuevo</h3>
+                  <p class="nz-text-muted">Entra a tu cuenta de Ntizar.</p>
+                </div>
+                <label class="nz-field">
+                  <span class="nz-field__label">Email</span>
+                  <input class="nz-input" type="email" value="ada@ntizar.dev">
+                </label>
+                <label class="nz-field">
+                  <span class="nz-field__label">Contraseña</span>
+                  <input class="nz-input" type="password" value="constellation">
+                </label>
+                <div class="nz-cluster" style="justify-content:space-between">
+                  <label class="nz-check"><input type="checkbox" checked><span>Recordarme</span></label>
+                  <a href="#" class="nz-text-sm">¿Olvidaste tu clave?</a>
+                </div>
+                <button class="nz-btn nz-btn--primary nz-btn--block">Entrar</button>
+                <div class="nz-divider--label">o continúa con</div>
+                <div class="nz-cluster">
+                  <button class="nz-btn nz-btn--secondary" style="flex:1">Google</button>
+                  <button class="nz-btn nz-btn--secondary" style="flex:1">GitHub</button>
+                </div>
+              </form>
+            </div>
+            <div class="nz-auth-shell__art">
+              <span class="nz-badge nz-badge--glass-brand nz-badge--no-dot" style="margin-bottom:1rem">Constellation v4.1</span>
+              <h2>Construye con identidad.<br>Sin fricción.</h2>
+              <p>El sistema que escala contigo, manteniendo siempre la firma azul + naranja.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ MODAL ============ -->
+  <dialog id="gx-modal" class="nz-modal">
+    <div class="nz-modal__panel" style="position:relative">
+      <button class="nz-modal__close" id="gx-modal-close" aria-label="Cerrar">×</button>
+      <h3 class="nz-text-h3" style="margin:0">Confirmar despliegue</h3>
+      <p class="nz-text-muted">Vas a desplegar Constellation a producción. Esta acción no se puede deshacer fácilmente.</p>
+      <div class="nz-callout nz-callout--info">
+        <span class="nz-callout__title">Resumen</span>
+        <div class="nz-callout__body">9 packs · 5 skins · 0 dependencias · CSS-only.</div>
+      </div>
+      <div class="nz-cluster" style="justify-content:flex-end">
+        <button class="nz-btn nz-btn--ghost" id="gx-modal-cancel">Cancelar</button>
+        <button class="nz-btn nz-btn--primary" id="gx-modal-confirm">Desplegar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ============ DRAWER ============ -->
+  <aside class="nz-drawer nz-drawer--right" id="gx-drawer" aria-label="Drawer demo">
+    <div class="nz-cluster" style="justify-content:space-between;margin-bottom:1rem">
+      <strong>Notificaciones</strong>
+      <button class="nz-btn nz-btn--ghost nz-btn--sm" id="gx-drawer-close">Cerrar</button>
+    </div>
+    <ul class="nz-timeline">
+      <li class="nz-timeline__item nz-timeline__item--accent">Constellation v4.1 desplegado</li>
+      <li class="nz-timeline__item">Nuevo skin <strong>citrus</strong> añadido</li>
+      <li class="nz-timeline__item">Pack <strong>forms</strong> publicado</li>
+      <li class="nz-timeline__item">Pack <strong>ui</strong> publicado</li>
+      <li class="nz-timeline__item">Pack <strong>patterns</strong> publicado</li>
+    </ul>
+  </aside>
+
+  <!-- ============ TOAST STACK ============ -->
+  <div class="nz-toast-stack nz-toast-stack--top-right" id="gx-toasts" aria-live="polite"></div>
+
+  <footer class="gx-foot">
+    <div class="nz-container">
+      Ntizar Constellation · CSS-only · sin build · sin dependencias obligatorias.
+    </div>
+  </footer>
+
+  <!-- ====================== JS ====================== -->
+  <script>
+    // ----- Theme + Skin -----
+    const root = document.body;
+    const themeBtn = document.getElementById('gx-theme');
+    const themeLabel = document.getElementById('gx-theme-l');
+    themeBtn.addEventListener('click', () => {
+      const dark = root.dataset.nzTheme === 'dark';
+      root.dataset.nzTheme = dark ? 'light' : 'dark';
+      themeLabel.textContent = dark ? 'Light' : 'Dark';
+      // re-render charts con tokens nuevos
+      renderCharts();
+    });
+
+    document.querySelectorAll('.gx-skin-switch button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.gx-skin-switch button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+        b.setAttribute('aria-pressed', 'true');
+        root.dataset.nzSkin = b.dataset.skin;
+        renderCharts();
+      });
+    });
+
+    // ----- Reveal on scroll -----
+    const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('is-visible')), { threshold: 0.12 });
+    document.querySelectorAll('.nz-reveal').forEach(el => io.observe(el));
+
+    // ----- KPIs -----
+    const kpis = [
+      { label: 'MRR',          value: '€48.2k', delta: '+12.4%', kind: 'up',   accent: false },
+      { label: 'Usuarios',     value: '12.840', delta: '+3.1%',  kind: 'up',   accent: false },
+      { label: 'Conversión',   value: '4.7%',   delta: '−0.4%',  kind: 'down', accent: true  },
+      { label: 'NPS',          value: '62',     delta: '=',      kind: 'flat', accent: false },
+    ];
+    document.getElementById('gx-kpis').innerHTML = kpis.map((k, i) => `
+      <article class="nz-kpi ${k.accent ? 'nz-kpi--accent' : ''} ${i===0 ? 'nz-kpi--aurora' : ''} nz-reveal">
+        <div class="nz-kpi__label">${k.label}</div>
+        <div class="nz-kpi__value">${k.value}</div>
+        <div class="nz-kpi__delta ${k.kind === 'down' ? 'nz-kpi__delta--down' : k.kind === 'flat' ? 'nz-kpi__delta--flat' : ''}">${k.delta}</div>
+      </article>
+    `).join('');
+    document.querySelectorAll('.nz-kpi.nz-reveal').forEach(el => io.observe(el));
+
+    // ----- Charts -----
+    let lineChart, donutChart;
+    function palette() {
+      const css = getComputedStyle(document.body);
+      return Array.from({length: 8}, (_, i) => css.getPropertyValue(`--nz-chart-${i+1}`).trim());
+    }
+    function renderCharts() {
+      const p = palette();
+      const css = getComputedStyle(document.body);
+      const grid = css.getPropertyValue('--nz-chart-grid').trim();
+      const axis = css.getPropertyValue('--nz-chart-axis').trim();
+      const text = css.getPropertyValue('--nz-text-default').trim();
+
+      const days = Array.from({length: 14}, (_, i) => 'D' + (i+1));
+      const sessions = [320, 410, 380, 540, 610, 720, 690, 780, 820, 760, 880, 940, 1020, 1100];
+      const conv     = [12,  15,  14,  20,  22,  26,  25,  29,  31,  28,  33,  37,  41,  44];
+
+      if (lineChart) lineChart.destroy();
+      lineChart = new Chart(document.getElementById('gx-line'), {
+        type: 'line',
+        data: {
+          labels: days,
+          datasets: [
+            { label: 'Sesiones',   data: sessions, borderColor: p[0], backgroundColor: p[0]+'33', tension: .35, fill: true, pointRadius: 0, borderWidth: 2 },
+            { label: 'Conversión', data: conv,     borderColor: p[1], backgroundColor: p[1]+'33', tension: .35, fill: true, pointRadius: 0, borderWidth: 2, yAxisID: 'y1' },
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { display: false }},
+          scales: {
+            x:  { grid: { color: grid }, ticks: { color: axis }},
+            y:  { grid: { color: grid }, ticks: { color: axis }},
+            y1: { position: 'right', grid: { display: false }, ticks: { color: axis }}
+          }
+        }
+      });
+
+      if (donutChart) donutChart.destroy();
+      donutChart = new Chart(document.getElementById('gx-donut'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Orgánico', 'Paid', 'Email', 'Referral', 'Social'],
+          datasets: [{ data: [42, 22, 14, 12, 10], backgroundColor: [p[0], p[1], p[2], p[3], p[4]], borderWidth: 0 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '62%',
+          plugins: { legend: { position: 'bottom', labels: { color: text, font: { size: 11 }, boxWidth: 10 }}}
+        }
+      });
+    }
+
+    // ----- Map -----
+    function initMap() {
+      if (typeof L === 'undefined') return;
+      const map = L.map('gx-map', { zoomControl: true, attributionControl: false }).setView([40.4168, -3.7038], 12);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
+      const points = [
+        [40.4168, -3.7038, 'Sol'],
+        [40.4530, -3.6883, 'Chamartín'],
+        [40.4090, -3.6920, 'Atocha'],
+        [40.4364, -3.6892, 'Retiro'],
+        [40.4250, -3.7200, 'Príncipe Pío'],
+      ];
+      points.forEach(([lat,lng,name], i) => {
+        const cls = i % 2 === 0 ? 'nz-map__pin' : 'nz-map__pin nz-map__pin--accent';
+        L.marker([lat,lng], { icon: L.divIcon({ className: cls, iconSize: [22,22] })})
+          .addTo(map).bindPopup('<strong>' + name + '</strong><br>Estación operativa');
+      });
+    }
+
+    // ----- three.js (particle field, paleta del skin) -----
+    async function initThree() {
+      const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.164/build/three.module.js');
+      const canvas = document.getElementById('gx-three');
+      const scene = new THREE.Scene();
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      const stage = canvas.parentElement;
+      function size() {
+        const r = stage.getBoundingClientRect();
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+        renderer.setSize(r.width, r.height, false);
+        camera.aspect = r.width / r.height; camera.updateProjectionMatrix();
+      }
+      const camera = new THREE.PerspectiveCamera(60, 16/9, 0.1, 100);
+      camera.position.z = 14;
+
+      // partículas
+      const N = 800;
+      const geo = new THREE.BufferGeometry();
+      const positions = new Float32Array(N * 3);
+      const colors = new Float32Array(N * 3);
+      const css = getComputedStyle(document.body);
+      const c1 = new THREE.Color(css.getPropertyValue('--nz-color-brand').trim());
+      const c2 = new THREE.Color(css.getPropertyValue('--nz-color-accent').trim());
+      const c3 = new THREE.Color('#7c3aed');
+      for (let i = 0; i < N; i++) {
+        const r = 6 + Math.random() * 4;
+        const th = Math.random() * Math.PI * 2;
+        const ph = Math.acos(2*Math.random()-1);
+        positions[i*3]   = r * Math.sin(ph) * Math.cos(th);
+        positions[i*3+1] = r * Math.sin(ph) * Math.sin(th);
+        positions[i*3+2] = r * Math.cos(ph);
+        const t = Math.random();
+        const c = t < .4 ? c1 : t < .7 ? c3 : c2;
+        colors[i*3]   = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+      }
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      const mat = new THREE.PointsMaterial({ size: .08, vertexColors: true, transparent: true, opacity: .85 });
+      const points = new THREE.Points(geo, mat);
+      scene.add(points);
+
+      size();
+      addEventListener('resize', size);
+
+      function tick() {
+        points.rotation.y += 0.0025;
+        points.rotation.x += 0.0010;
+        renderer.render(scene, camera);
+        requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    // ----- Tabs -----
+    document.querySelectorAll('[data-gx-tab]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = btn.dataset.gxTab;
+        const list = btn.closest('.nz-tabs__list');
+        const tabs = list.parentElement;
+        list.querySelectorAll('.nz-tab').forEach(t => t.classList.remove('nz-tab--active'));
+        btn.classList.add('nz-tab--active');
+        tabs.querySelectorAll('[data-gx-panel]').forEach(p => {
+          p.hidden = p.dataset.gxPanel !== idx;
+        });
+      });
+    });
+
+    // ----- Modal (dialog nativo con fallback) -----
+    const modal = document.getElementById('gx-modal');
+    const openModal = () => modal.showModal ? modal.showModal() : modal.classList.add('is-open');
+    const closeModal = () => modal.close ? modal.close() : modal.classList.remove('is-open');
+    document.getElementById('gx-modal-open').addEventListener('click', openModal);
+    document.getElementById('gx-modal-close').addEventListener('click', closeModal);
+    document.getElementById('gx-modal-cancel').addEventListener('click', closeModal);
+    document.getElementById('gx-modal-confirm').addEventListener('click', () => { closeModal(); fireToast('success', 'Desplegado', 'Constellation está en producción.'); });
+
+    // ----- Drawer -----
+    const drawer = document.getElementById('gx-drawer');
+    document.getElementById('gx-drawer-open').addEventListener('click', () => drawer.classList.add('is-open'));
+    document.getElementById('gx-drawer-close').addEventListener('click', () => drawer.classList.remove('is-open'));
+
+    // ----- Dropdown -----
+    const dd = document.getElementById('gx-dd');
+    const ddBtn = document.getElementById('gx-dd-btn');
+    const ddMenu = dd.querySelector('.nz-dropdown__menu');
+    ddBtn.addEventListener('click', (e) => { e.stopPropagation(); ddMenu.classList.toggle('is-open'); });
+    document.addEventListener('click', (e) => { if (!dd.contains(e.target)) ddMenu.classList.remove('is-open'); });
+
+    // ----- Toast -----
+    const toastStack = document.getElementById('gx-toasts');
+    function fireToast(kind = 'success', title = 'Listo', body = '') {
+      const t = document.createElement('div');
+      t.className = `nz-toast nz-toast--${kind}`;
+      t.innerHTML = `<div class="nz-toast__title">${title}</div><div class="nz-toast__body">${body}</div>`;
+      toastStack.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(-0.5rem)'; t.style.transition = 'all .25s'; }, 3200);
+      setTimeout(() => t.remove(), 3600);
+    }
+    document.getElementById('gx-toast-fire').addEventListener('click', () => {
+      const kinds = ['success','accent','warning','danger'];
+      const k = kinds[Math.floor(Math.random()*kinds.length)];
+      fireToast(k, 'Constellation', 'Esto es un toast de demostración.');
+    });
+
+    // ----- Chip remove -----
+    document.querySelectorAll('.nz-chip__remove').forEach(b => {
+      b.addEventListener('click', () => b.closest('.nz-chip').remove());
+    });
+
+    // ----- File drop preview -----
+    document.querySelectorAll('.nz-file').forEach(f => {
+      const input = f.querySelector('input[type=file]');
+      const drop = f.querySelector('.nz-file__drop');
+      if (!input || !drop) return;
+      drop.addEventListener('click', () => input.click());
+      input.addEventListener('change', () => {
+        if (input.files[0]) drop.textContent = `📎 ${input.files[0].name}`;
+      });
+    });
+
+    // boot
+    addEventListener('DOMContentLoaded', () => {
+      // chart.js suele estar listo gracias al defer; si no, esperamos a load
+      const ready = () => { renderCharts(); initMap(); };
+      if (typeof Chart !== 'undefined' && typeof L !== 'undefined') ready();
+      else addEventListener('load', ready, { once: true });
+      initThree().catch(e => console.warn('three failed', e));
+    });
+  </script>
+</body>
+</html>
