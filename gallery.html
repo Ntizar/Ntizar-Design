@@ -69,7 +69,7 @@
     .gx-side__controls label { font-size: var(--nz-text-xs); color: var(--nz-text-muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 
     .gx-skin-switch { display: flex; flex-wrap: wrap; gap: .25rem; padding: .25rem; background: var(--nz-surface-base); border: 1px solid var(--nz-border-soft); border-radius: var(--nz-radius-pill); }
-    .gx-skin-switch button { border: 0; background: transparent; cursor: pointer; padding: .35rem .55rem; border-radius: var(--nz-radius-pill); font-size: 0.65rem; font-weight: 700; color: var(--nz-text-muted); text-transform: uppercase; letter-spacing: .05em; }
+    .gx-skin-switch button { display: inline-flex; align-items: center; justify-content: center; border: 0; background: transparent; cursor: pointer; padding: .4rem .6rem; border-radius: var(--nz-radius-pill); font-size: 0.65rem; line-height: 1; font-weight: 700; color: var(--nz-text-muted); text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
     .gx-skin-switch button[aria-pressed="true"] { background: var(--nz-gradient-brand); color: var(--nz-text-on-brand); box-shadow: var(--nz-shadow-brand); }
 
     .gx-main { min-width: 0; }
@@ -249,7 +249,7 @@
           <button data-skin="midnight" aria-pressed="false">Midnight</button>
           <button data-skin="ocean"    aria-pressed="false">Ocean</button>
           <button data-skin="citrus"   aria-pressed="false">Citrus</button>
-          <button data-skin="contrast" aria-pressed="false">Contrast · AAA</button>
+          <button data-skin="contrast" aria-pressed="false">Contrast</button>
         </div>
 
         <label>Shape <span style="opacity:.6">(v5)</span></label>

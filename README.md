@@ -72,6 +72,203 @@ CI activo en [.github/workflows/design-lint.yml](.github/workflows/design-lint.y
 </body>
 ```
 
+---
+
+## 🇪🇸 Cómo funciona Aurora (en 2 minutos)
+
+Aurora es **CSS puro**. Sin npm, sin build, sin JS obligatorio. Lo único que haces es enlazar archivos `.css` y poner la clase `.nz` en tu `<body>` (o en cualquier wrapper). A partir de ahí, **el sistema vive completamente dentro de `.nz`**, lo que significa que puedes meterlo dentro de una app que ya use Tailwind, Bootstrap o lo que sea, y no romperá nada de fuera.
+
+### El núcleo: 1 archivo
+
+`ntizar.css` trae tokens, layout primitives (`.nz-container`, `.nz-stack`, `.nz-grid`, `.nz-cluster`, `.nz-surface`), componentes (`.nz-btn`, `.nz-card`, `.nz-badge`, `.nz-input`, `.nz-alert`…) y utilidades (`.u-nz-*`). Es lo único obligatorio.
+
+### Los 10 packs: opt-in
+
+Cada pack añade un dominio. Cargas solo los que necesites:
+
+| Pack | Para qué sirve |
+|---|---|
+| `themes` | 5 skins de marca (`aurora`, `sunset`, `midnight`, `ocean`, `citrus`) |
+| `data` | KPIs, progress bars, skeletons, avatars, timeline |
+| `charts` | Wrappers para Chart.js / Apex / D3 + sparklines y donuts CSS-only |
+| `maps` | Estilos para Leaflet / Mapbox / MapLibre |
+| `viz` | Stages para three.js, fondos aurora, orbs |
+| `motion` | Animaciones reveal, glow-pulse, aurora-pan, shimmer |
+| `forms` | Switches, OTP, file drop, range, stepper |
+| `ui` | Modal, drawer, tabs, dropdown, toast, tooltip |
+| `patterns` | App-shell, hero, pricing, FAQ, footer, auth |
+| **`next`** | **v5: liquid glass real, OKLCH, multi-axis, mesh, AAA** |
+
+### Cómo se personaliza: atributos en el root
+
+Toda la apariencia se controla con atributos `data-*` sobre `.nz`. Sin tocar CSS:
+
+```html
+<body class="nz"
+      data-nz-theme="dark"           <!-- light | dark -->
+      data-nz-skin="midnight"        <!-- aurora|sunset|midnight|ocean|citrus|contrast -->
+      data-nz-shape="rounded"        <!-- default|sharp|rounded|brutalist  (v5) -->
+      data-nz-density="compact"      <!-- comfortable|compact|spacious     (v5) -->
+      data-nz-motion="springy"       <!-- standard|springy|calm|none       (v5) -->
+      data-nz-color-system="oklch">  <!-- hex|oklch                        (v5) -->
+```
+
+Cambias un atributo y **toda la página** se reescribe en runtime. Sin JS, sin recargas.
+
+### Las reglas de oro (constitución)
+
+1. **Todo lo público vive bajo `.nz`** — no hay clases globales sueltas.
+2. **Todos los valores son tokens `--nz-*`** — nunca hardcodes un hex o un `16px`.
+3. **Sin `!important`** fuera de utilidades.
+4. **BEM** para componentes: `.nz-card__body--featured`.
+5. **Si no aparece en `gallery.html`, no existe** — la galería es la única fuente de verdad de la API pública.
+
+Toda la constitución está en [SYSTEM.md](SYSTEM.md).
+
+---
+
+## 🇬🇧 How Aurora works (in 2 minutes)
+
+Aurora is **pure CSS**. No npm, no build step, no required JS. You just link `.css` files and put the `.nz` class on your `<body>` (or any wrapper). From there, **the entire system lives inside `.nz`**, which means you can drop it into an app already using Tailwind, Bootstrap, or anything else, and it won't break anything outside its scope.
+
+### The core: 1 file
+
+`ntizar.css` ships tokens, layout primitives (`.nz-container`, `.nz-stack`, `.nz-grid`, `.nz-cluster`, `.nz-surface`), components (`.nz-btn`, `.nz-card`, `.nz-badge`, `.nz-input`, `.nz-alert`…) and utilities (`.u-nz-*`). It's the only mandatory file.
+
+### The 10 packs: opt-in
+
+Each pack adds a domain. Load only what you need:
+
+| Pack | What it ships |
+|---|---|
+| `themes` | 5 brand skins (`aurora`, `sunset`, `midnight`, `ocean`, `citrus`) |
+| `data` | KPIs, progress bars, skeletons, avatars, timeline |
+| `charts` | Wrappers for Chart.js / Apex / D3 + CSS-only sparklines and donuts |
+| `maps` | Styles for Leaflet / Mapbox / MapLibre |
+| `viz` | Stages for three.js, aurora backgrounds, orbs |
+| `motion` | Reveal, glow-pulse, aurora-pan, shimmer animations |
+| `forms` | Switches, OTP, file drop, range, stepper |
+| `ui` | Modal, drawer, tabs, dropdown, toast, tooltip |
+| `patterns` | App-shell, hero, pricing, FAQ, footer, auth |
+| **`next`** | **v5: real liquid glass, OKLCH, multi-axis, mesh, AAA** |
+
+### How you customize: root attributes
+
+The whole look is driven by `data-*` attributes on `.nz`. No CSS edits required:
+
+```html
+<body class="nz"
+      data-nz-theme="dark"           <!-- light | dark -->
+      data-nz-skin="midnight"        <!-- aurora|sunset|midnight|ocean|citrus|contrast -->
+      data-nz-shape="rounded"        <!-- default|sharp|rounded|brutalist  (v5) -->
+      data-nz-density="compact"      <!-- comfortable|compact|spacious     (v5) -->
+      data-nz-motion="springy"       <!-- standard|springy|calm|none       (v5) -->
+      data-nz-color-system="oklch">  <!-- hex|oklch                        (v5) -->
+```
+
+Flip an attribute and **the whole page** restyles at runtime. No JS, no reload.
+
+### The golden rules (constitution)
+
+1. **Everything public lives under `.nz`** — no loose global classes.
+2. **All values are `--nz-*` tokens** — never hardcode a hex or `16px`.
+3. **No `!important`** outside utilities.
+4. **BEM** for components: `.nz-card__body--featured`.
+5. **If it's not in `gallery.html`, it doesn't exist** — the gallery is the single source of truth for public API.
+
+Full constitution lives in [SYSTEM.md](SYSTEM.md).
+
+---
+
+## ✨ What's new in v5.0 "Constellation"
+
+Five disruptive features delivered as a **single opt-in pack** (`ntizar.next.css`). Zero changes to the core, 100% backward compatible.
+
+### 1. Liquid Glass real (visionOS-style)
+
+Not just translucency. **Real glass** with:
+
+- **Specular highlight** that follows the pointer (5 lines of optional JS update `--nz-mx` / `--nz-my`).
+- **Chromatic edge** — 1px border with subtle cyan→magenta dispersion that simulates light refraction at the rim.
+- **Dual inset shadow** — top highlight + inner bottom shadow = glass with apparent thickness.
+- **Conic gradient ondulation** revealed on hover.
+- **Backdrop**: `blur(20px) saturate(1.6) brightness(1.05)`.
+
+```html
+<article class="nz-card--glass-liquid nz-card--glass-liquid-aurora" data-liquid>
+  <h3>Premium card</h3>
+</article>
+
+<script>
+  // Specular highlight follows cursor
+  document.querySelectorAll('[data-liquid]').forEach(el => {
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--nz-mx', ((e.clientX - r.left) / r.width  * 100) + '%');
+      el.style.setProperty('--nz-my', ((e.clientY - r.top ) / r.height * 100) + '%');
+    });
+  });
+</script>
+```
+
+Tints: `--brand`, `--accent`, `--aurora`. Available on `.nz-card`, `.nz-surface`, `.nz-btn`.
+
+### 2. OKLCH color system
+
+Parallel scales `--nz-oklch-{brand,accent}-{50..900}` derived from a single hue + chroma:
+
+```css
+:root {
+  --nz-hue-brand: 245;   /* shift the entire brand scale */
+  --nz-hue-accent: 47;
+  --nz-chroma: 0.18;
+}
+```
+
+Activated globally with `data-nz-color-system="oklch"`. Perceptually uniform, better dark mode, smoother gradients.
+
+### 3. Multi-axis theming
+
+Four orthogonal axes you mix freely with theme + skin:
+
+| Axis | Values |
+|---|---|
+| `data-nz-shape` | `default` · `sharp` · `rounded` · `brutalist` |
+| `data-nz-density` | `comfortable` · `compact` · `spacious` |
+| `data-nz-motion` | `standard` · `springy` · `calm` · `none` |
+| `data-nz-color-system` | `hex` · `oklch` |
+
+Same components, infinite personalities. `brutalist` even swaps soft shadows for solid offset shadows.
+
+### 4. Aurora Mesh background
+
+Animated mesh-gradient hero, **0 KB of images**:
+
+```html
+<section class="nz-aurora-mesh nz-aurora-mesh--animated nz-aurora-mesh--glass nz-aurora-mesh--hero">
+  <h1>Hero with breathing mesh</h1>
+</section>
+```
+
+Four OKLCH `radial-gradient` layers + `mix-blend-mode: screen` + 22s `ease-in-out` drift animation.
+
+### 5. Accessibility as a feature
+
+- **6th skin `contrast`** — WCAG AAA. Pure black/white. Double focus ring (black + amber).
+- **Forced-colors mode** — full overrides for Windows High Contrast (`Canvas`, `CanvasText`, `Highlight`, `Mark`).
+- **Auto-contrast** — `--nz-text-auto` + `.u-nz-text-auto` using native `light-dark()`.
+- **Reduced motion** — every animation guarded by `@media (prefers-reduced-motion: reduce)`.
+
+```html
+<body class="nz" data-nz-skin="contrast">  <!-- WCAG AAA mode -->
+```
+
+### Why it's safe
+
+`ntizar.next.css` is **purely additive**. It only adds new selectors and new tokens. If you don't load it, you don't notice it. If you load it but use no v5 classes or attributes, your page renders identically. **Zero risk to ship to production today.**
+
+---
+
 ## Learnings De Uso
 
 ### 1. El design system debe verse en la documentación
