@@ -69,8 +69,11 @@
     .gx-side__controls label { font-size: var(--nz-text-xs); color: var(--nz-text-muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 
     .gx-skin-switch { display: flex; flex-wrap: wrap; gap: .25rem; padding: .25rem; background: var(--nz-surface-base); border: 1px solid var(--nz-border-soft); border-radius: var(--nz-radius-pill); }
-    .gx-skin-switch button { display: inline-flex; align-items: center; justify-content: center; border: 0; background: transparent; cursor: pointer; padding: .4rem .6rem; border-radius: var(--nz-radius-pill); font-size: 0.65rem; line-height: 1; font-weight: 700; color: var(--nz-text-muted); text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+    .gx-skin-switch button { display: inline-flex; align-items: center; justify-content: center; flex: 1 0 auto; border: 0; background: transparent; cursor: pointer; padding: .35rem .55rem; border-radius: var(--nz-radius-pill); font-size: 0.62rem; line-height: 1; font-weight: 700; color: var(--nz-text-muted); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
     .gx-skin-switch button[aria-pressed="true"] { background: var(--nz-gradient-brand); color: var(--nz-text-on-brand); box-shadow: var(--nz-shadow-brand); }
+
+    .gx-axis-select { width: 100%; padding: .45rem .65rem; border: 1px solid var(--nz-border-soft); border-radius: var(--nz-radius-md); background: var(--nz-surface-base); color: var(--nz-text-strong); font-family: var(--nz-font-sans); font-size: var(--nz-text-xs); font-weight: 600; cursor: pointer; appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--nz-text-muted) 50%), linear-gradient(135deg, var(--nz-text-muted) 50%, transparent 50%); background-position: calc(100% - 1rem) center, calc(100% - .65rem) center; background-size: .35rem .35rem; background-repeat: no-repeat; padding-right: 1.75rem; }
+    .gx-axis-select:focus-visible { outline: 2px solid var(--nz-color-brand); outline-offset: 2px; }
 
     .gx-main { min-width: 0; }
     .gx-section-anchor { scroll-margin-top: 1.5rem; }
@@ -253,33 +256,33 @@
         </div>
 
         <label>Shape <span style="opacity:.6">(v5)</span></label>
-        <div class="gx-skin-switch" role="group" aria-label="Shape">
-          <button data-axis="shape" data-value="default"   aria-pressed="true">Default</button>
-          <button data-axis="shape" data-value="sharp"     aria-pressed="false">Sharp</button>
-          <button data-axis="shape" data-value="rounded"   aria-pressed="false">Rounded</button>
-          <button data-axis="shape" data-value="brutalist" aria-pressed="false">Brutalist</button>
-        </div>
+        <select class="gx-axis-select" data-axis="shape" aria-label="Shape">
+          <option value="default" selected>Default</option>
+          <option value="sharp">Sharp</option>
+          <option value="rounded">Rounded</option>
+          <option value="brutalist">Brutalist</option>
+        </select>
 
         <label>Density <span style="opacity:.6">(v5)</span></label>
-        <div class="gx-skin-switch" role="group" aria-label="Density">
-          <button data-axis="density" data-value="comfortable" aria-pressed="true">Comfortable</button>
-          <button data-axis="density" data-value="compact"     aria-pressed="false">Compact</button>
-          <button data-axis="density" data-value="spacious"    aria-pressed="false">Spacious</button>
-        </div>
+        <select class="gx-axis-select" data-axis="density" aria-label="Density">
+          <option value="comfortable" selected>Comfortable</option>
+          <option value="compact">Compact</option>
+          <option value="spacious">Spacious</option>
+        </select>
 
         <label>Motion <span style="opacity:.6">(v5)</span></label>
-        <div class="gx-skin-switch" role="group" aria-label="Motion">
-          <button data-axis="motion" data-value="standard" aria-pressed="true">Standard</button>
-          <button data-axis="motion" data-value="springy"  aria-pressed="false">Springy</button>
-          <button data-axis="motion" data-value="calm"     aria-pressed="false">Calm</button>
-          <button data-axis="motion" data-value="none"     aria-pressed="false">None</button>
-        </div>
+        <select class="gx-axis-select" data-axis="motion" aria-label="Motion">
+          <option value="standard" selected>Standard</option>
+          <option value="springy">Springy</option>
+          <option value="calm">Calm</option>
+          <option value="none">None</option>
+        </select>
 
         <label>Color system <span style="opacity:.6">(v5)</span></label>
-        <div class="gx-skin-switch" role="group" aria-label="Color system">
-          <button data-axis="color-system" data-value="hex"   aria-pressed="true">Hex</button>
-          <button data-axis="color-system" data-value="oklch" aria-pressed="false">OKLCH</button>
-        </div>
+        <select class="gx-axis-select" data-axis="color-system" aria-label="Color system">
+          <option value="hex" selected>Hex</option>
+          <option value="oklch">OKLCH</option>
+        </select>
       </div>
     </aside>
 
@@ -2380,26 +2383,26 @@ document.querySelectorAll('[data-liquid]').forEach(el =&gt; {
       codeToggle.textContent = shouldOpen ? 'Cerrar código' : 'Abrir código';
     });
 
-    // ====== Switch group handler (skin + multi-axis: shape, density, motion, color-system) ======
+    // ====== Skin pill switcher ======
     document.querySelectorAll('.gx-skin-switch').forEach(group => {
       group.addEventListener('click', (e) => {
         const button = e.target.closest('button');
         if (!button || !group.contains(button)) return;
-
-        // Reset only buttons in THIS group
         group.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false'));
         button.setAttribute('aria-pressed', 'true');
-
         if (button.dataset.skin) {
           root.dataset.nzSkin = button.dataset.skin;
           renderFoundations();
           renderCharts();
           syncThreeColors();
-        } else if (button.dataset.axis) {
-          // multi-axis: data-nz-shape, data-nz-density, data-nz-motion, data-nz-color-system
-          const attr = 'data-nz-' + button.dataset.axis;
-          root.setAttribute(attr, button.dataset.value);
         }
+      });
+    });
+
+    // ====== Multi-axis selects (shape, density, motion, color-system) ======
+    document.querySelectorAll('.gx-axis-select').forEach(sel => {
+      sel.addEventListener('change', () => {
+        root.setAttribute('data-nz-' + sel.dataset.axis, sel.value);
       });
     });
 
