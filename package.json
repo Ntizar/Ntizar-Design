@@ -1,0 +1,46 @@
+{
+  "name": "@ntizar/design-system",
+  "version": "4.2.0",
+  "description": "Ntizar Aurora — Constellation. CSS-only design system, namespaced under .nz, with multi-skin runtime and 9 optional packs.",
+  "private": true,
+  "license": "MIT",
+  "files": [
+    "ntizar.css",
+    "ntizar.themes.css",
+    "ntizar.data.css",
+    "ntizar.charts.css",
+    "ntizar.maps.css",
+    "ntizar.viz.css",
+    "ntizar.motion.css",
+    "ntizar.forms.css",
+    "ntizar.ui.css",
+    "ntizar.patterns.css",
+    "DESIGN.md",
+    "skins/",
+    "INDEX.md",
+    "SYSTEM.md",
+    "USAGE.md",
+    "README.md"
+  ],
+  "scripts": {
+    "lint:design": "npx --yes @google/design.md lint DESIGN.md && npx --yes @google/design.md lint skins/DESIGN.sunset.md && npx --yes @google/design.md lint skins/DESIGN.midnight.md && npx --yes @google/design.md lint skins/DESIGN.ocean.md && npx --yes @google/design.md lint skins/DESIGN.citrus.md",
+    "diff:design": "npx --yes @google/design.md diff DESIGN.md DESIGN.md@main",
+    "build:tailwind": "npx --yes @google/design.md tailwind DESIGN.md > dist/tailwind.theme.json",
+    "build:tailwind:skins": "npx --yes @google/design.md tailwind skins/DESIGN.sunset.md > dist/tailwind.sunset.json && npx --yes @google/design.md tailwind skins/DESIGN.midnight.md > dist/tailwind.midnight.json && npx --yes @google/design.md tailwind skins/DESIGN.ocean.md > dist/tailwind.ocean.json && npx --yes @google/design.md tailwind skins/DESIGN.citrus.md > dist/tailwind.citrus.json",
+    "build:dtcg": "npx --yes @google/design.md export --format dtcg DESIGN.md > dist/tokens.json",
+    "build": "mkdir -p dist && npm run build:tailwind && npm run build:tailwind:skins && npm run build:dtcg",
+    "validate": "npm run lint:design"
+  },
+  "keywords": [
+    "design-system",
+    "css",
+    "design.md",
+    "design-tokens",
+    "dtcg",
+    "tailwind",
+    "ntizar",
+    "aurora",
+    "liquid-glass"
+  ],
+  "homepage": "https://github.com/ntizar/design-system#readme"
+}

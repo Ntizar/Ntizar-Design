@@ -29,10 +29,21 @@ Cada pack es independiente. Carga 1 o los 9.
 
 ## Documentación
 
+- [DESIGN.md](DESIGN.md) → **capa de metadatos design.md** (Google spec): tokens, tipografía, componentes y skins en formato canónico legible por agentes y herramientas (linter WCAG, export Tailwind/DTCG). Por skin: [skins/DESIGN.sunset.md](skins/DESIGN.sunset.md), [midnight](skins/DESIGN.midnight.md), [ocean](skins/DESIGN.ocean.md), [citrus](skins/DESIGN.citrus.md).
 - [INDEX.md](INDEX.md) → **mapa para agentes**: "necesito X → archivo Y, clases Z"
 - [USAGE.md](USAGE.md) → **guía narrativa** con escenarios completos (landing, dashboard, mapas, 3D, auth, pricing…)
 - [SYSTEM.md](SYSTEM.md) → **constitución del sistema**: cómo extender, versionar y mantener identidad
 - [gallery.html](gallery.html) → showcase único con **todo** (foundations + core + charts + map + 3D + forms + UI + patterns + reglas de uso + reference API)
+
+### Ecosistema design.md
+
+```bash
+npm run lint:design       # contraste WCAG AA + tokens huérfanos + refs rotas
+npm run build:tailwind    # → dist/tailwind.theme.json
+npm run build:dtcg        # → dist/tokens.json (Design Tokens Community Group)
+```
+
+CI activo en [.github/workflows/design-lint.yml](.github/workflows/design-lint.yml): cualquier PR que baje contraste o rompa tokens falla automáticamente.
 
 ## Quick Start (todo activado)
 
@@ -388,6 +399,18 @@ Incluye menos caos que v3, pero vuelve a ser visualmente mas Ntizar.
 Los componentes avanzados volverán solo si siguen esta regla: aportar valor sin romper la sencillez del core.
 
 ## Changelog
+
+### v4.3.0 — design.md interop (agent-friendly metadata layer)
+
+**Nuevo: capa de metadatos compatible con `design.md`** (sin tocar una línea de CSS).
+
+- [`DESIGN.md`](DESIGN.md) en la raíz: spec canónico (Overview → Colors → Typography → Layout → Elevation → Shapes → Components → Do's and Don'ts) con front-matter YAML que mirrors 1:1 los tokens reales de `ntizar.css`.
+- [`skins/DESIGN.{sunset,midnight,ocean,citrus}.md`](skins/) — un descriptor por skin con `extends: ../DESIGN.md`.
+- Sección custom `packs:` para los 9 packs Constellation (el spec preserva secciones desconocidas).
+- [`package.json`](package.json) con scripts `lint:design`, `build:tailwind`, `build:dtcg`.
+- [`.github/workflows/design-lint.yml`](.github/workflows/design-lint.yml): CI que valida contraste WCAG AA, detecta tokens huérfanos y refs rotas, y publica `dist/tailwind.theme.json` + `dist/tokens.json` como artefactos.
+
+Resultado: agentes (Claude Code, Copilot, Cursor) y herramientas del ecosistema leen Aurora en un solo archivo canónico, y proyectos con Tailwind pueden importar la marca sin copiar CSS.
 
 ### v4.2.0 — Constitutional alignment (audit pass)
 

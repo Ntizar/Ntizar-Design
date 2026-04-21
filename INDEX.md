@@ -1,6 +1,8 @@
 # Ntizar Design System — Índice Operativo (para agentes y humanos)
 
 > Mapa rápido para saber **qué archivo cargar** y **qué clase usar** según lo que necesites construir.
+>
+> ¿Buscas el spec canónico de tokens/componentes para un agente o herramienta de diseño? Lee [DESIGN.md](DESIGN.md) (compatible con `design.md` de Google).
 
 ---
 

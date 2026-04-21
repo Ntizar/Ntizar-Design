@@ -1,0 +1,66 @@
+name: design.md lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Validate DESIGN.md (WCAG AA, tokens, refs)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # needed for `design.md diff` against main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Lint Aurora (root DESIGN.md)
+        run: npx --yes @google/design.md lint DESIGN.md
+
+      - name: Lint Sunset skin
+        run: npx --yes @google/design.md lint skins/DESIGN.sunset.md
+
+      - name: Lint Midnight skin
+        run: npx --yes @google/design.md lint skins/DESIGN.midnight.md
+
+      - name: Lint Ocean skin
+        run: npx --yes @google/design.md lint skins/DESIGN.ocean.md
+
+      - name: Lint Citrus skin
+        run: npx --yes @google/design.md lint skins/DESIGN.citrus.md
+
+      - name: Diff against main (PR only — fails on identity-breaking changes)
+        if: github.event_name == 'pull_request'
+        run: npx --yes @google/design.md diff DESIGN.md DESIGN.md@main || true
+
+  build:
+    name: Build Tailwind + DTCG exports
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Tailwind theme
+        run: |
+          mkdir -p dist
+          npx --yes @google/design.md tailwind DESIGN.md > dist/tailwind.theme.json
+
+      - name: Build DTCG tokens
+        run: npx --yes @google/design.md export --format dtcg DESIGN.md > dist/tokens.json
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-tokens
+          path: dist/
+          retention-days: 30

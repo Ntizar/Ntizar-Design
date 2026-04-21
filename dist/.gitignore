@@ -1,0 +1,4 @@
+# dist/ output of `npm run build` — Tailwind theme, DTCG tokens, etc.
+# Do not edit by hand. Source of truth is DESIGN.md and ntizar*.css.
+*
+!.gitignore
