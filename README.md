@@ -1,15 +1,56 @@
 # Ntizar Design System
 
-> Aurora v5.0 **Constellation**: un core CSS copiable + 10 packs opcionales para construir cualquier app web (dashboards, mapas, escenas 3D, landings, formularios, generative art) manteniendo identidad azul + naranja. v5 añade **Liquid Glass real**, **OKLCH**, **multi-axis theming** y **forced-colors**.
+> Aurora v5.1 **Constellation**: a copy-paste CSS core + 10 optional packs to build any web app (dashboards, maps, 3D scenes, landings, forms, generative art) keeping the blue + orange identity. v5 added **real Liquid Glass**, **OKLCH**, **multi-axis theming** and **forced-colors**. v5.1 ships **agent-ready onboarding** ([`AGENTS.md`](AGENTS.md)) + **public CDN** so you stop pasting CSS into AI prompts.
 
-![Version](https://img.shields.io/badge/version-5.0.0_Disruptive-2563eb)
+![Version](https://img.shields.io/badge/version-5.1.0-2563eb)
+![CDN](https://img.shields.io/badge/cdn-jsdelivr-9333ea)
 ![API](https://img.shields.io/badge/api-namespaced-0f172a)
 ![Modo](https://img.shields.io/badge/theme-light%20%7C%20dark%20%7C%20forced--colors-f97316)
-![Skins](https://img.shields.io/badge/skins-6%20(incl.%20AAA)-7c3aed)
-![Axes](https://img.shields.io/badge/axes-color%20%C2%B7%20theme%20%C2%B7%20skin%20%C2%B7%20shape%20%C2%B7%20density%20%C2%B7%20motion-16a34a)
+![Skins](https://img.shields.io/badge/skins-6-7c3aed)
 ![CSS Only](https://img.shields.io/badge/css-only-16a34a)
 
-`CSS-only` · `Opt-in` · `Namespaced` · `Light-first` · `Liquid glass` · `Modular packs`
+`CSS-only` · `Opt-in` · `Namespaced` · `Light-first` · `Liquid glass` · `Modular packs` · `Agent-ready`
+
+---
+
+## 🤖 Using Aurora with AI agents (without burning tokens)
+
+**TL;DR:** do **not** paste the CSS files into your prompt. The CSS lives on the HTML, not in the agent's context.
+
+### ❌ Wrong (what most people try)
+Paste `ntizar.css` + 10 packs (~170 KB ≈ 50.000 tokens) into the prompt every time you ask for a screen.
+
+### ✅ Right (3 steps)
+
+1. **Give the agent only [`AGENTS.md`](AGENTS.md) and [`INDEX.md`](INDEX.md)** — together ~20 KB / ~5.000 tokens. They are the operative map: "I need X → use pack Y → these classes".
+2. **Link the CSS via the public CDN** in the generated HTML (the browser fetches it; the agent never sees the bytes):
+   ```html
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.css">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.next.css">
+   ```
+3. **Tell the agent: "Generate HTML only. The CSS is already linked. Use Aurora classes from `INDEX.md`. Never invent class names."**
+
+Result: ~5k tokens of context (loaded once per session) instead of 50k per prompt. The agent generates dense, consistent HTML and stops hallucinating class names.
+
+### Drop-in files for AI tooling
+
+- [`AGENTS.md`](AGENTS.md) — the open AGENTS standard (OpenAI, Sourcegraph, Anthropic).
+- [`.github/copilot-instructions.md`](.github/copilot-instructions.md) — auto-loaded by GitHub Copilot.
+- For Claude Code: copy `AGENTS.md` to `CLAUDE.md` in your project root — Claude reads it on every session.
+- For Cursor: same content under `.cursor/rules/aurora.mdc`.
+
+### Pin a version in production
+
+Replace `@master` with `@v5.1.0` in CDN URLs to get an immutable, edge-cached asset.
+
+### Honest limitations
+
+- **No JS shipped.** Modal/tabs/drawer/dropdown/toast are styled, not behaved. You (or the agent) must toggle state classes like `.nz-modal--open`. See [`AGENTS.md`](AGENTS.md) for the convention.
+- **"WCAG AAA" applies to the `contrast` skin specifically**, not to every skin/component combination. The other skins target AA. Liquid Glass on top of busy backgrounds can drop below AA — always test with axe / Lighthouse.
+- **No tree-shaking.** A page using 5 components still loads the full pack. For ultra-small bundles, copy only the rules you need (the file is plain CSS — grep is enough).
+- **No releases tagged yet.** Until v5.1.0 is tagged, `@master` and `@v5.1.0` resolve differently. Pin once tagged.
+
+---
 
 ## Arquitectura Constellation
 
@@ -49,18 +90,20 @@ CI activo en [.github/workflows/design-lint.yml](.github/workflows/design-lint.y
 
 ## Quick Start (todo activado)
 
+### Opción A — vía CDN (recomendado para apps nuevas y para IA)
+
 ```html
-<link rel="stylesheet" href="ntizar.css">
-<link rel="stylesheet" href="ntizar.themes.css">
-<link rel="stylesheet" href="ntizar.data.css">
-<link rel="stylesheet" href="ntizar.charts.css">
-<link rel="stylesheet" href="ntizar.maps.css">
-<link rel="stylesheet" href="ntizar.viz.css">
-<link rel="stylesheet" href="ntizar.motion.css">
-<link rel="stylesheet" href="ntizar.forms.css">
-<link rel="stylesheet" href="ntizar.ui.css">
-<link rel="stylesheet" href="ntizar.patterns.css">
-<link rel="stylesheet" href="ntizar.next.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.themes.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.data.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.charts.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.maps.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.viz.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.motion.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.forms.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.ui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.patterns.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.next.css">
 
 <body class="nz"
       data-nz-theme="light"
@@ -68,6 +111,19 @@ CI activo en [.github/workflows/design-lint.yml](.github/workflows/design-lint.y
       data-nz-shape="default"
       data-nz-density="comfortable"
       data-nz-motion="standard">
+  ...
+</body>
+```
+
+### Opción B — archivos locales (cuando quieres versionar el CSS junto a tu app)
+
+```html
+<link rel="stylesheet" href="ntizar.css">
+<link rel="stylesheet" href="ntizar.themes.css">
+<link rel="stylesheet" href="ntizar.next.css">
+<!-- ...resto de packs que necesites -->
+
+<body class="nz" data-nz-theme="light" data-nz-skin="aurora">
   ...
 </body>
 ```
@@ -604,6 +660,16 @@ Incluye menos caos que v3, pero vuelve a ser visualmente mas Ntizar.
 Los componentes avanzados volverán solo si siguen esta regla: aportar valor sin romper la sencillez del core.
 
 ## Changelog
+
+### v5.1.0 — Agent-ready (CDN + AGENTS.md)
+
+No CSS changes. This release fixes the **biggest unforced error** of v5.0: people pasting 170 KB of CSS into AI prompts.
+
+- **[`AGENTS.md`](AGENTS.md)** at repo root — the open AGENTS standard. Concise (~3 KB / ~1k tokens). Tells any agent: load only `INDEX.md`, link CSS via CDN, follow the 5 hard rules, do not invent classes.
+- **[`.github/copilot-instructions.md`](.github/copilot-instructions.md)** — GitHub Copilot reads it automatically inside this repo.
+- **Public CDN via jsDelivr** — `https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/<file>.css`. Pin `@v5.1.0` once tagged for immutable production assets.
+- **README rewritten** with a top-of-file "Using Aurora with AI agents (without burning tokens)" block, CDN snippet in Quick Start, and an honest **Limitations** section: zero JS shipped, AAA scope clarified to the `contrast` skin only, no tree-shaking, no tagged releases yet.
+- **No code changes.** All v5.0 selectors, tokens, and behaviors remain identical.
 
 ### v5.0.0 — Disruptive layer (`ntizar.next.css`)
 

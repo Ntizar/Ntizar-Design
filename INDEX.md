@@ -2,6 +2,8 @@
 
 > Mapa rápido para saber **qué archivo cargar** y **qué clase usar** según lo que necesites construir.
 >
+> **Agentes IA:** lee primero [`AGENTS.md`](AGENTS.md). Te dice cómo usar Aurora sin gastar tokens (CDN + reglas duras). Este archivo es tu mapa de clases una vez sepas las reglas.
+>
 > ¿Buscas el spec canónico de tokens/componentes para un agente o herramienta de diseño? Lee [DESIGN.md](DESIGN.md) (compatible con `design.md` de Google).
 
 ---
@@ -9,7 +11,10 @@
 ## TL;DR — Carga sólo lo que uses
 
 ```html
-<!-- siempre -->
+<!-- Aurora público vía CDN (jsDelivr) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Ntizar/Ntizar-Aurora@master/ntizar.css">
+
+<!-- siempre que tengas archivos locales -->
 <link rel="stylesheet" href="ntizar.css">
 
 <!-- skins opcionales (5 paletas que mantienen identidad azul+naranja) -->
